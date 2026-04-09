@@ -1,4 +1,4 @@
-name: Playwright Tests
+name: Project Trello API
 on:
   push:
     branches: [ main, master ]
@@ -13,12 +13,16 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
+    
     - name: Install dependencies
       run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
+
+    - name: Run Playwright API tests
       run: npx playwright test
+      env:
+        TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
+        TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
+
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
