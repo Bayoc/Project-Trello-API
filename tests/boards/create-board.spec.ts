@@ -1,7 +1,8 @@
 import { test, expect } from '@playwright/test';
-import { ENV } from '../../playwright.config';
 import { ENDPOINTS } from '../../data/endpoints';
 import { createBoardData } from '../../data/board.data';
+import { authParams } from '../../helpers/auth-helpers';
+import { deleteBoard } from '../../helpers/board-helpers';
 
 
 test.describe('CREATE Board', () => {
@@ -10,14 +11,12 @@ test.describe('CREATE Board', () => {
         let boardID: string = '';
         test.afterEach(async ({ request }) => {
             // cleanup - delete board
-            const response = await request.delete(ENDPOINTS.BOARD.BY_ID(boardID), {
-                params: { key: ENV.api_key, token: ENV.token },
-            });
+            await deleteBoard(request, boardID);
         });
 
         test('POST - should create a new board with valid data', async ({ request }) => {
             const response = await request.post(ENDPOINTS.BOARD.BASE, {
-                params: { key: ENV.api_key, token: ENV.token },
+                params: authParams,
                 data: createBoardData
             })
 
@@ -32,7 +31,7 @@ test.describe('CREATE Board', () => {
         test('POST Create Board with characters limit in name - should return 200 and create board', async ({ request }) => {
             const longName = 'a'.repeat(16384);
             const response = await request.post(ENDPOINTS.BOARD.BASE, {
-                params: { key: ENV.api_key, token: ENV.token },
+                params: authParams,
                 data: { name: longName }
             })
 
@@ -48,7 +47,7 @@ test.describe('CREATE Board', () => {
     test.describe('Negative Scenarios', () => {
         test('POST Create Board without data - should return 400 error when creating a board without a name', async ({ request }) => {
             const response = await request.post(ENDPOINTS.BOARD.BASE, {
-                params: { key: ENV.api_key, token: ENV.token },
+                params: authParams
             })
 
             expect(response.status()).toBe(400);
@@ -58,7 +57,7 @@ test.describe('CREATE Board', () => {
 
         test('POST Create Board with characters limit +1 in name - should return 400 error', async ({ request }) => {
             const response = await request.post(ENDPOINTS.BOARD.BASE, {
-                params: { key: ENV.api_key, token: ENV.token },
+                params: authParams,
                 data: { name: 'a'.repeat(16385) }
             })
 

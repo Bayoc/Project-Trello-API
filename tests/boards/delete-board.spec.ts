@@ -1,20 +1,14 @@
 import { test, expect } from '@playwright/test';
-import { ENV } from '../../playwright.config';
+import { authParams } from '../../helpers/auth-helpers';
 import { ENDPOINTS } from '../../data/endpoints';
-import { createBoardData } from '../../data/board.data';
-
+import { createBoard, deleteBoard } from '../../helpers/board-helpers';
 
 test.describe('DELETE Board', () => {
     let boardID: string = '';
 
     test.beforeEach(async ({ request }) => {
         // create BOARD
-        const response = await request.post(ENDPOINTS.BOARD.BASE, {
-            params: { key: ENV.api_key, token: ENV.token },
-            data: createBoardData
-        })
-        const body = await response.json();
-        boardID = body.id;
+        boardID = await createBoard(request);
     });
 
     test.describe('Positive Scenarios', () => {
@@ -22,12 +16,12 @@ test.describe('DELETE Board', () => {
 
         test('DELETE Board - board should be deleted', async ({ request }) => {
             const response = await request.delete(ENDPOINTS.BOARD.BY_ID(boardID), {
-                params: { key: ENV.api_key, token: ENV.token },
+                params: authParams,
             });
             expect(response.status()).toBe(200);
 
             const deleteResponse = await request.get(ENDPOINTS.BOARD.BY_ID(boardID), {
-                params: { key: ENV.api_key, token: ENV.token },
+                params: authParams,
             });
             expect(deleteResponse.status()).toBe(404);
         });
@@ -37,19 +31,17 @@ test.describe('DELETE Board', () => {
 
         test.afterAll(async ({ request }) => {
             // cleanup - delete board
-            const response = await request.delete(ENDPOINTS.BOARD.BY_ID(boardID), {
-                params: { key: ENV.api_key, token: ENV.token },
-            });
+            await deleteBoard(request, boardID);
         });
 
         test('DELETE Board with invalid ID - should return 404 not found', async ({ request }) => {
             const response = await request.delete(ENDPOINTS.BOARD.BY_ID('aaaaaaaaaaaaaaaaaaaaaaaa'), {
-                params: { key: ENV.api_key, token: ENV.token },
+                params: authParams,
             })
             expect(response.status()).toBe(404);
 
             const deleteResponse = await request.get(ENDPOINTS.BOARD.BY_ID(boardID), {
-                params: { key: ENV.api_key, token: ENV.token },
+                params: authParams,
             });
             expect(deleteResponse.status()).toBe(200);
 
