@@ -1,4 +1,4 @@
-# Portfolio-Playwright-API-Trello
+# Portfolio-Project-Trello-API
 
 Automated API testing framework for the [Trello REST API](https://developer.atlassian.com/cloud/trello/rest/) built with Playwright and TypeScript.
 
