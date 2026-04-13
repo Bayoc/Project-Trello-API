@@ -16,9 +16,3 @@ export async function createList(request: APIRequestContext, idBoard: string) {
     return body.id;
 }
 
-
-export async function deleteBoard(request: APIRequestContext, id: string) {
-    const response = await request.delete(ENDPOINTS.BOARD.BY_ID(id), {
-        params: authParams,
-    })
-}
