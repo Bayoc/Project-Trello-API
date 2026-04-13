@@ -1,140 +1,90 @@
-# Test Plan — Trello REST API
+# Portfolio-Playwright-API-Trello
 
-## 1. Project Overview
+Automated API testing framework for the [Trello REST API](https://developer.atlassian.com/cloud/trello/rest/) built with Playwright and TypeScript.
 
-**Objective:** To design and implement an automated API testing framework for the Trello REST API using Playwright and TypeScript, demonstrating best practices in test automation, resource management and documentation.
-
----
-
-## 2. Scope
-
-### In Scope
-
-**Core Resources and Operations:**
-
-| Resource    | Create | Read | Update | Delete |
-|-------------|--------|------|--------|--------|
-| Boards      | ✅     | ✅   | ✅     | ✅     |
-| Lists       | ✅     | ✅   | ✅     | ➡️ Archive (close) instead of Delete |
-| Cards       | ✅     | ✅   | ✅     | ✅     |
-| Members     | ❌     | ✅   | ✅*    | ❌     |
-| Labels      | ✅     | ✅   | ✅     | ✅     |
-| Checklists  | ✅     | ✅   | ✅     | ✅     |
-
-> \* `PUT /members/{id}` — Forge and OAuth2 apps cannot access this resource. See Known Risks.
-
-**Validations:**
-- Status codes
-- Response body schema
-- Data integrity
-- Security headers
-
-**Error Handling:**
-- Negative scenarios (invalid IDs, unauthorized access)
-
-### Out of Scope
-
-- UI / Frontend testing
-- Performance / Load testing
-- Third-party Power-Up integrations
-- Member assignment to Checklists
+> ⚠️ Work in progress — actively developed.
 
 ---
 
-## 3. Test Environment & Tools
+## Tech Stack
 
-| Category          | Tool / Technology                          | Version     |
-|-------------------|--------------------------------------------|-------------|
-| Language          | TypeScript                                 | 6.0.2       |
-| Framework         | Playwright                                 | 1.58.2      |
-| Runtime           | Node.js                                    | v24.14.0    |
-| Package Manager   | NPM                                        | 11.12.1     |
-| CI/CD             | GitHub Actions + GitHub Secrets            | —           |
-| Local Dev Secrets | dotenv                                     | —           |
-| HTTP Client       | Playwright APIRequestContext (built-in)    | —           |
-| Manual Exploration| Postman                                    | —           |
-| IDE               | VS Code                                    | —           |
-
-**Authentication:** Trello API Key + Token passed as query parameters (`key`, `token`).
-Stored in `.env` for local development and GitHub Secrets for CI/CD.
+| Tool | Role |
+|------|------|
+| Playwright | API test framework + HTTP client (APIRequestContext) |
+| TypeScript | Language |
+| GitHub Actions | CI/CD |
+| dotenv | Local environment variables |
+| Postman | Manual API exploration |
 
 ---
 
-## 4. Testing Strategy
-
-### Approach
-Functional API testing.
-
-### Prioritization
-
-| Priority | Scope |
-|----------|-------|
-| P0 | Core CRUD operations for Boards (blockers for all other tests) |
-| P1 | Lists, Cards, Labels and Checklists management |
-| P2 | Negative scenarios and Security Headers |
-
-### Test Structure
-Each test file covers one endpoint. Files are grouped by resource in dedicated folders:
+## Project Structure
 
 ```
+data/
+  endpoints.ts        # ENDPOINTS object + HttpMethod enum
+  board.data.ts       # Types and test data for Boards
+  lists.data.ts       # Types and test data for Lists
+helpers/
+  auth-helpers.ts     # Shared auth params (API key + token)
+  board-helpers.ts    # createBoard / deleteBoard functions
+  lists-helpers.ts    # createList functions
 tests/
-├── boards/
-├── lists/
-├── cards/
-├── labels/
-├── checklists/
-├── members/
-└── security-headers.spec.ts
+  boards/
+    create-board.spec.ts
+    get-board.spec.ts
+    update-board.spec.ts
+    delete-board.spec.ts
+  lists/
+    create-list.spec.ts
+  auth.spec.ts
+  security-headers.spec.ts
+TEST_PLAN.md
 ```
 
-Each spec file is divided into:
-- **Positive Scenarios**
-- **Negative Scenarios**
-- **Security Headers** (security-headers.spec.ts only)
+---
 
-### Cleanup Strategy
+## Test Coverage
 
-| Hook        | Action |
-|-------------|--------|
-| `beforeAll` | Create one Board for all tests in the file |
-| `beforeEach`| Create a fresh List for each test |
-| `afterEach` | Delete List (cascading deletion of Cards and Checklists) |
-| `afterAll`  | Delete Board |
+| Resource | Create | Read | Update | Delete |
+|----------|--------|------|--------|--------|
+| Boards | ✅ | ✅ | ✅ | ✅ |
+| Lists | 🔄 | — | — | — |
+| Cards | — | — | — | — |
+| Labels | — | — | — | — |
+| Checklists | — | — | — | — |
+| Members | — | — | — | — |
 
-### Security Headers
-
-Tested once in `security-headers.spec.ts` using `GET /members/me` as the base request.
-
-| Header                       | Protection                          |
-|------------------------------|-------------------------------------|
-| `access-control-allow-methods` | CORS — verify allowed HTTP methods |
-| `access-control-allow-headers` | CORS — verify allowed headers      |
-| `x-frame-options: DENY`      | Clickjacking protection             |
-| `x-content-type-options: nosniff` | MIME sniffing protection       |
-| `strict-transport-security`  | Enforces HTTPS                      |
+**Additional:**
+- ✅ Authentication tests (401 / 400 scenarios)
+- ✅ Security headers validation
 
 ---
 
-## 5. Endpoint List
+## Authentication
 
-To be defined during implementation.
-
-Core resources: Boards, Lists, Cards, Labels, Checklists, Members.
+Trello API uses API Key + Token passed as query parameters on every request. Credentials are stored in `.env` for local development and GitHub Secrets for CI/CD.
 
 ---
 
-## 6. Acceptance Criteria
+## Test Design Decisions
 
-- All resources defined in scope have at least one test per HTTP method
-- Each test validates: status code, response body schema and data integrity
-- All tests pass in CI/CD pipeline on every push to `main` branch
+- **One file per endpoint** — modularity and easier debugging
+- **`beforeAll` / `afterAll`** — one Board per test file for GET / UPDATE / DELETE tests
+- **`beforeEach` / `afterEach`** — fresh Board per test for CREATE tests
+- **Cascading cleanup** — deleting a List removes its Cards and Checklists automatically
+- **Auth tested once** — `auth.spec.ts` covers all authentication scenarios globally
+- **Security headers tested once** — `security-headers.spec.ts` uses `GET /members/me` as base request
 
 ---
 
-## 7. Known Risks
+## CI/CD
 
-| Risk | Mitigation |
-|------|------------|
-| Rate limiting | Run tests sequentially; Trello limits: 100 req/10s per token, 300 req/10s per key |
-| Members `PUT` restriction | Mark as known limitation, skip if 403 |
-| Resource dependencies | Fixed execution order: Board → List → Card → Checklist / Label |
+Tests run automatically on every push and pull request to `main` via GitHub Actions. Test reports are uploaded as artifacts (retention: 30 days).
+
+---
+
+## Related Projects
+
+- [Portfolio-Playwright-API](https://github.com/<your-username>/Portfolio-Playwright-API) — API tests for Automation Exercise & Restful Booker
+- [Portfolio-Playwright-Automation](https://github.com/<your-username>/Portfolio-Playwright-Automation) — UI automation tests
