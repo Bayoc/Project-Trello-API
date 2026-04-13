@@ -27,6 +27,7 @@ export const ENDPOINTS = {
 
     MEMBER: {
         BY_ID: (id: string) => `${API_VERSION}/members/${id}`,
+        ME: `${API_VERSION}/members/me`
     },
 
     LABEL: {
