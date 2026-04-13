@@ -86,5 +86,5 @@ Tests run automatically on every push and pull request to `main` via GitHub Acti
 
 ## Related Projects
 
-- [Portfolio-Playwright-API](https://github.com/<your-username>/Portfolio-Playwright-API) — API tests for Automation Exercise & Restful Booker
-- [Portfolio-Playwright-Automation](https://github.com/<your-username>/Portfolio-Playwright-Automation) — UI automation tests
+- [Portfolio-Playwright-API](https://github.com/Bayoc/Portfolio-Playwright-API) — API tests for Automation Exercise & Restful Booker
+- [Portfolio-Playwright-Automation](https://github.com/Bayoc/Portfolio-Playwright-Automation) — UI automation tests
