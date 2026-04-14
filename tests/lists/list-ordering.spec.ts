@@ -76,6 +76,29 @@ test.describe('POST - List Ordering', () => {
     });
 
     test.describe('Negative Scenarios', () => {
+        test('POST Create List - invalid enum string ("middle") should return 400', async ({ request }) => {
+            const response = await request.post(ENDPOINTS.LIST.BASE, {
+                params: authParams,
+                data: {
+                    name: createListData.name,
+                    idBoard: boardID,
+                    pos: 'middle'
+                }
+            });
+            expect(response.status()).toBe(400);
+        });
+
+        test('POST Create List - missing parent idBoard should return 400', async ({ request }) => {
+            const response = await request.post(ENDPOINTS.LIST.BASE, {
+                params: authParams,
+                data: {
+                    name: createListData.name,
+                    pos: 'top'
+                }
+                // intentional missing idBoard
+            });
+            expect(response.status()).toBe(400);
+        });
 
     });
 });
