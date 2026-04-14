@@ -20,7 +20,7 @@ test.describe('POST - Create List', () => {
     });
 
     test.describe('Positive Scenarios', () => {
-        test('POST - should create a new list', async ({ request }) => {
+        test('POST Create List - should create a new list', async ({ request }) => {
             const response = await request.post(ENDPOINTS.LIST.BASE, {
                 params: authParams,
                 data: {
@@ -38,6 +38,27 @@ test.describe('POST - Create List', () => {
     });
 
     test.describe('Negative Scenarios', () => {
+        test('POST Create List with invalid boardID - should return error 401 Unauthorized', async ({ request }) => {
+            const response = await request.post(ENDPOINTS.LIST.BASE, {
+                params: authParams,
+                data: {
+                    name: createListData.name,
+                    idBoard: 'aaaaaaaaaaaaaaaaaaaaaaaa'
+                }
+            })
+            expect(response.status()).toBe(401);
+            // Trello returns 401 for invalid idBoard for security reasons - 404 would reveal resource existence
+        });
 
+        test('POST Create List with empty name - should return error 400 bad request', async ({ request }) => {
+            const response = await request.post(ENDPOINTS.LIST.BASE, {
+                params: authParams,
+                data: {
+                    name: '',
+                    idBoard: boardID
+                }
+            })
+            expect(response.status()).toBe(400);  
+        });
     });
 });
