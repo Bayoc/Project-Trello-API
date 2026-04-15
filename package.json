@@ -3,17 +3,32 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "prepare": "husky",
+    "test": "npx playwright test",
+    "lint": "eslint ."
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.58.2",
-    "@types/node": "^25.5.0"
+    "@types/node": "^25.5.0",
+    "@typescript-eslint/eslint-plugin": "^8.58.2",
+    "@typescript-eslint/parser": "^8.58.2",
+    "eslint": "^10.2.0",
+    "eslint-plugin-playwright": "^2.10.1",
+    "globals": "^17.5.0",
+    "husky": "^9.1.7",
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.58.2"
   },
   "dependencies": {
-    "dotenv": "^17.3.1",
-    "typescript": "^6.0.2"
+    "dotenv": "^17.3.1"
+  },
+  "lint-staged": {
+    "**/*.{ts,js}": "eslint --max-warnings=0"
   }
 }
