@@ -22,6 +22,7 @@
     "eslint-plugin-playwright": "^2.10.1",
     "globals": "^17.5.0",
     "husky": "^9.1.7",
+    "jiti": "^2.6.1",
     "typescript": "^6.0.2",
     "typescript-eslint": "^8.58.2"
   },
@@ -30,5 +31,8 @@
   },
   "lint-staged": {
     "**/*.{ts,js}": "eslint --max-warnings=0"
+  },
+  "husky": {
+    "shell": "C:/Program Files/Git/bin/bash.exe"
   }
 }

@@ -10,6 +10,7 @@ test.describe("GET Board", () => {
     // create BOARD
     boardID = await createBoard(request);
   });
+
   test.afterAll(async ({ request }) => {
     // cleanup - delete board
     await deleteBoard(request, boardID);

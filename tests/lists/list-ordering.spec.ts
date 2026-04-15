@@ -53,7 +53,6 @@ test.describe("POST - List Ordering", () => {
       expect(body2).toHaveProperty("pos");
       expect(body2.pos).toBeGreaterThan(pos1);
       pos2 = body2.pos;
-      console.log(body.pos);
 
       // 2. Third List (Between first and second list)
       const responsePos3 = await request.post(ENDPOINTS.LIST.BASE, {
