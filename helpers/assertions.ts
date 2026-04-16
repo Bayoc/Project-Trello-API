@@ -7,13 +7,12 @@ export function assertStatusCode(
   expect(response.status()).toBe(statusCode);
 }
 
-export async function assertName(
-  response: APIResponse,
+export function assertName(
+  body: Record<string, unknown>,
   bodyName: string,
-): Promise<void> {
-  const body = await response.json();
+): void {
   expect(body).toHaveProperty("name");
-  expect(body.name).toBe(bodyName);
+  expect(body["name"]).toBe(bodyName);
 }
 
 export async function assertErrorText(
@@ -24,10 +23,9 @@ export async function assertErrorText(
   expect(errorText).toContain(expectedText);
 }
 
-export async function assertHasProperty(
-  response: APIResponse,
+export function assertHasProperty(
+  body: Record<string, unknown>,
   property: string,
-): Promise<void> {
-  const body = await response.json();
+): void {
   expect(body).toHaveProperty(property);
 }

@@ -32,7 +32,8 @@ test.describe("PUT Board", () => {
       const response = await updateBoard(request, boardID, { name: newName });
 
       assertStatusCode(response, 200);
-      assertName(response, newName);
+      const body = await response.json();
+      assertName(body, newName);
     });
   });
 
