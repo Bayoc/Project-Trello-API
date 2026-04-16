@@ -6,7 +6,7 @@ import {
 } from "../../helpers/board-helpers";
 import {
   assertStatusCode,
-  assertBoardName,
+  assertName,
   assertErrorText,
 } from "../../helpers/assertions";
 import { ERROR_MESSAGES } from "../../data/error_messages";
@@ -32,8 +32,7 @@ test.describe("PUT Board", () => {
       const response = await updateBoard(request, boardID, { name: newName });
 
       assertStatusCode(response, 200);
-      const body = await response.json();
-      assertBoardName(body, newName);
+      assertName(response, newName);
     });
   });
 

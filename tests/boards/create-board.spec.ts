@@ -7,6 +7,7 @@ import { deleteBoard } from "../../helpers/board-helpers";
 test.describe("CREATE Board", () => {
   test.describe("Positive Scenarios", () => {
     let boardID: string = "";
+
     test.afterEach(async ({ request }) => {
       // cleanup - delete board
       await deleteBoard(request, boardID);
