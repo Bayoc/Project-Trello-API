@@ -1,8 +1,15 @@
-import { test, expect } from "@playwright/test";
+import { test } from "@playwright/test";
 import { ENDPOINTS } from "../../data/endpoints";
 import { createBoardData } from "../../data/board.data";
 import { authParams } from "../../helpers/auth-helpers";
 import { deleteBoard } from "../../helpers/board-helpers";
+import {
+  assertStatusCode,
+  assertName,
+  assertHasProperty,
+  assertErrorText,
+} from "../../helpers/assertions";
+import { ERROR_MESSAGES } from "../../data/error_messages";
 
 test.describe("CREATE Board", () => {
   test.describe("Positive Scenarios", () => {
@@ -21,10 +28,10 @@ test.describe("CREATE Board", () => {
         data: createBoardData,
       });
 
-      expect(response.status()).toBe(200);
+      assertStatusCode(response, 200);
       const body = await response.json();
-      expect(body).toHaveProperty("id");
-      expect(body.name).toBe(createBoardData.name);
+      assertName(body, createBoardData.name);
+      assertHasProperty(body, "id");
 
       boardID = body.id;
     });
@@ -38,10 +45,10 @@ test.describe("CREATE Board", () => {
         data: { name: longName },
       });
 
-      expect(response.status()).toBe(200);
+      assertStatusCode(response, 200);
       const body = await response.json();
-      expect(body).toHaveProperty("id");
-      expect(body.name).toBe(longName);
+      assertHasProperty(body, "id");
+      assertName(body, longName);
 
       boardID = body.id;
     });
@@ -55,9 +62,8 @@ test.describe("CREATE Board", () => {
         params: authParams,
       });
 
-      expect(response.status()).toBe(400);
-      const body = await response.json();
-      expect(body.message).toBe("invalid value for name");
+      assertStatusCode(response, 400);
+      await assertErrorText(response, ERROR_MESSAGES.badNameRequest);
     });
 
     test("POST Create Board with characters limit +1 in name - should return 400 error", async ({
@@ -68,9 +74,8 @@ test.describe("CREATE Board", () => {
         data: { name: "a".repeat(16385) },
       });
 
-      expect(response.status()).toBe(400);
-      const body = await response.json();
-      expect(body.message).toBe("invalid value for name");
+      assertStatusCode(response, 400);
+      await assertErrorText(response, ERROR_MESSAGES.badNameRequest);
     });
   });
 });
