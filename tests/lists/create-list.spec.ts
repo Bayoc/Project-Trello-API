@@ -30,8 +30,9 @@ test.describe("POST - Create List", () => {
       });
 
       assertStatusCode(response, 200);
-      await assertName(response, createListData.name);
-      await assertHasProperty(response, "id");
+      const body = await response.json();
+      assertName(body, createListData.name);
+      assertHasProperty(body, "id");
     });
   });
 
@@ -60,7 +61,7 @@ test.describe("POST - Create List", () => {
           idBoard: boardID,
         },
       });
-      expect(response.status()).toBe(400);
+      assertStatusCode(response, 400);
     });
   });
 });
