@@ -21,6 +21,12 @@ export default [
       ...typescriptConfigs.recommended.rules,
       ...playwright.configs["flat/recommended"].rules,
       "no-console": "error",
+      "playwright/expect-expect": [
+        "error",
+        {
+          assertFunctionNames: ["assertStatusCode", "assertBoardName"],
+        },
+      ],
     },
   },
 ];

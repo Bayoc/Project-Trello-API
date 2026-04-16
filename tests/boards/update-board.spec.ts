@@ -1,7 +1,15 @@
-import { test, expect } from "@playwright/test";
-import { authParams } from "../../helpers/auth-helpers";
-import { ENDPOINTS } from "../../data/endpoints";
-import { createBoard, deleteBoard } from "../../helpers/board-helpers";
+import { test } from "@playwright/test";
+import {
+  createBoard,
+  deleteBoard,
+  updateBoard,
+} from "../../helpers/board-helpers";
+import {
+  assertStatusCode,
+  assertBoardName,
+  assertErrorText,
+} from "../../helpers/assertions";
+import { ERROR_MESSAGES } from "../../data/error_messages";
 
 test.describe("PUT Board", () => {
   let boardID: string = "";
@@ -10,6 +18,7 @@ test.describe("PUT Board", () => {
     // create BOARD
     boardID = await createBoard(request);
   });
+
   test.afterAll(async ({ request }) => {
     // cleanup - delete board
     await deleteBoard(request, boardID);
@@ -19,13 +28,12 @@ test.describe("PUT Board", () => {
     test("PUT Update Board Name - board name should be updated", async ({
       request,
     }) => {
-      const response = await request.put(ENDPOINTS.BOARD.BY_ID(boardID), {
-        params: { ...authParams, name: "Updated Name" },
-      });
+      const newName = "Updated Name";
+      const response = await updateBoard(request, boardID, { name: newName });
 
-      expect(response.status()).toBe(200);
+      assertStatusCode(response, 200);
       const body = await response.json();
-      expect(body.name).toBe("Updated Name");
+      assertBoardName(body, newName);
     });
   });
 
@@ -33,13 +41,12 @@ test.describe("PUT Board", () => {
     test("PUT Update Board with invalid ID - should return 404 not found", async ({
       request,
     }) => {
-      const response = await request.put(
-        ENDPOINTS.BOARD.BY_ID("aaaaaaaaaaaaaaaaaaaaaaaa"),
-        {
-          params: authParams,
-        },
-      );
-      expect(response.status()).toBe(404);
+      const response = await updateBoard(request, "aaaaaaaaaaaaaaaaaaaaaaaa", {
+        name: "Name",
+      });
+      assertStatusCode(response, 404);
+
+      await assertErrorText(response, ERROR_MESSAGES.notFound);
     });
   });
 });
