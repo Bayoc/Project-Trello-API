@@ -38,9 +38,10 @@ test.describe("CREATE Board", () => {
     }) => {
       const longName = "a".repeat(16384);
       const response = await createBoard(request, longName);
-      const body = await response.json();
 
       assertStatusCode(response, 200);
+
+      const body = await response.json();
       assertHasProperty(body, "id");
       assertName(body, longName);
 

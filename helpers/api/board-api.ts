@@ -4,7 +4,8 @@ import { ENDPOINTS } from "../../data/endpoints";
 
 export const createBoard = (request: APIRequestContext, name: string) =>
   request.post(ENDPOINTS.BOARD.BASE, {
-    params: { ...authParams, name },
+    params: authParams,
+    data: { name },
   });
 
 export const deleteBoard = (request: APIRequestContext, boardId: string) =>
