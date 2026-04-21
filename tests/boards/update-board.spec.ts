@@ -1,6 +1,6 @@
 import { test } from "@playwright/test";
 import {
-  createBoard,
+  setupBoard,
   deleteBoard,
   updateBoard,
 } from "../../helpers/board-helpers";
@@ -16,7 +16,7 @@ test.describe("PUT Board", () => {
 
   test.beforeAll(async ({ request }) => {
     // create BOARD
-    boardID = await createBoard(request);
+    boardID = await setupBoard(request);
   });
 
   test.afterAll(async ({ request }) => {

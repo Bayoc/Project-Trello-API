@@ -3,7 +3,7 @@ import { authParams } from "../helpers/auth-helpers";
 import { ENDPOINTS } from "../data/endpoints";
 import { createBoardData } from "../data/board.data";
 
-export async function createBoard(request: APIRequestContext) {
+export async function setupBoard(request: APIRequestContext) {
   const response = await request.post(ENDPOINTS.BOARD.BASE, {
     params: authParams,
     data: createBoardData,

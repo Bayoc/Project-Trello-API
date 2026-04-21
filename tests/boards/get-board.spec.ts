@@ -1,14 +1,21 @@
-import { test, expect } from "@playwright/test";
+import { test } from "@playwright/test";
 import { authParams } from "../../helpers/auth-helpers";
 import { ENDPOINTS } from "../../data/endpoints";
-import { createBoard, deleteBoard } from "../../helpers/board-helpers";
+import { setupBoard, deleteBoard } from "../../helpers/board-helpers";
+import { ERROR_MESSAGES } from "../../data/error_messages";
+import {
+  assertStatusCode,
+  assertHasProperty,
+  assertID,
+  assertErrorText,
+} from "../../helpers/assertions";
 
 test.describe("GET Board", () => {
   let boardID: string = "";
 
   test.beforeAll(async ({ request }) => {
     // create BOARD
-    boardID = await createBoard(request);
+    boardID = await setupBoard(request);
   });
 
   test.afterAll(async ({ request }) => {
@@ -24,10 +31,10 @@ test.describe("GET Board", () => {
         params: authParams,
       });
 
-      expect(response.status()).toBe(200);
+      assertStatusCode(response, 200);
       const body = await response.json();
-      expect(body).toHaveProperty("id");
-      expect(body.id).toBe(boardID);
+      assertHasProperty(body, "id");
+      assertID(body, boardID);
 
       boardID = body.id;
     });
@@ -43,7 +50,8 @@ test.describe("GET Board", () => {
           params: authParams,
         },
       );
-      expect(response.status()).toBe(404);
+      assertStatusCode(response, 404);
+      await assertErrorText(response, ERROR_MESSAGES.notFound);
     });
   });
 });

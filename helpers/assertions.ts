@@ -15,6 +15,13 @@ export function assertName(
   expect(body["name"]).toBe(bodyName);
 }
 
+export function assertID(
+  body: Record<string, unknown>,
+  expectedID: string,
+): void {
+  expect(body["id"]).toBe(expectedID);
+}
+
 export async function assertErrorText(
   response: APIResponse,
   expectedText: string,

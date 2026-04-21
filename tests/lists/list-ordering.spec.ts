@@ -1,15 +1,16 @@
 import { test, expect } from "@playwright/test";
 import { ENDPOINTS } from "../../data/endpoints";
 import { authParams } from "../../helpers/auth-helpers";
-import { deleteBoard, createBoard } from "../../helpers/board-helpers";
+import { deleteBoard, setupBoard } from "../../helpers/board-helpers";
 import { createListData } from "../../data/lists.data";
+import { assertHasProperty, assertStatusCode } from "../../helpers/assertions";
 
 test.describe("POST - List Ordering", () => {
   let boardID: string = "";
 
   test.beforeAll(async ({ request }) => {
     // create BOARD
-    boardID = await createBoard(request);
+    boardID = await setupBoard(request);
   });
 
   test.afterAll(async ({ request }) => {
@@ -33,9 +34,9 @@ test.describe("POST - List Ordering", () => {
         },
       });
 
-      expect(response.status()).toBe(200);
+      assertStatusCode(response, 200);
       const body = await response.json();
-      expect(body).toHaveProperty("pos");
+      assertHasProperty(body, "pos");
       pos1 = body.pos;
 
       // 2. Second List (right side / at the end)
@@ -48,9 +49,9 @@ test.describe("POST - List Ordering", () => {
         },
       });
 
-      expect(responsePos2.status()).toBe(200);
+      assertStatusCode(responsePos2, 200);
       const body2 = await responsePos2.json();
-      expect(body2).toHaveProperty("pos");
+      assertHasProperty(body2, "pos");
       expect(body2.pos).toBeGreaterThan(pos1);
       pos2 = body2.pos;
 
@@ -64,9 +65,9 @@ test.describe("POST - List Ordering", () => {
         },
       });
 
-      expect(responsePos3.status()).toBe(200);
+      assertStatusCode(responsePos3, 200);
       const body3 = await responsePos3.json();
-      expect(body3).toHaveProperty("pos");
+      assertHasProperty(body3, "pos");
       expect(body3.pos).toBeGreaterThan(pos1);
       expect(body3.pos).toBeLessThan(pos2);
     });
@@ -84,7 +85,7 @@ test.describe("POST - List Ordering", () => {
           pos: "middle",
         },
       });
-      expect(response.status()).toBe(400);
+      assertStatusCode(response, 400);
     });
 
     test("POST Create List - missing parent idBoard should return 400", async ({
@@ -98,7 +99,7 @@ test.describe("POST - List Ordering", () => {
         },
         // intentional missing idBoard
       });
-      expect(response.status()).toBe(400);
+      assertStatusCode(response, 400);
     });
   });
 });

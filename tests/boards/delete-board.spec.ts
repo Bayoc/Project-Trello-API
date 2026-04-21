@@ -1,14 +1,16 @@
-import { test, expect } from "@playwright/test";
+import { test } from "@playwright/test";
 import { authParams } from "../../helpers/auth-helpers";
 import { ENDPOINTS } from "../../data/endpoints";
-import { createBoard, deleteBoard } from "../../helpers/board-helpers";
+import { setupBoard, deleteBoard } from "../../helpers/board-helpers";
+import { assertStatusCode, assertErrorText } from "../../helpers/assertions";
+import { ERROR_MESSAGES } from "../../data/error_messages";
 
 test.describe("DELETE Board", () => {
   let boardID: string = "";
 
   test.beforeEach(async ({ request }) => {
     // create BOARD
-    boardID = await createBoard(request);
+    boardID = await setupBoard(request);
   });
 
   test.describe("Positive Scenarios", () => {
@@ -16,12 +18,12 @@ test.describe("DELETE Board", () => {
       const response = await request.delete(ENDPOINTS.BOARD.BY_ID(boardID), {
         params: authParams,
       });
-      expect(response.status()).toBe(200);
+      assertStatusCode(response, 200);
 
       const deleteResponse = await request.get(ENDPOINTS.BOARD.BY_ID(boardID), {
         params: authParams,
       });
-      expect(deleteResponse.status()).toBe(404);
+      assertStatusCode(deleteResponse, 404);
     });
   });
 
@@ -40,12 +42,13 @@ test.describe("DELETE Board", () => {
           params: authParams,
         },
       );
-      expect(response.status()).toBe(404);
+      assertStatusCode(response, 404);
+      assertErrorText(response, ERROR_MESSAGES.notFound);
 
       const deleteResponse = await request.get(ENDPOINTS.BOARD.BY_ID(boardID), {
         params: authParams,
       });
-      expect(deleteResponse.status()).toBe(200);
+      assertStatusCode(deleteResponse, 200);
     });
   });
 });

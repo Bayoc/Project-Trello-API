@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { ENDPOINTS } from "../../data/endpoints";
 import { authParams } from "../../helpers/auth-helpers";
-import { deleteBoard, createBoard } from "../../helpers/board-helpers";
+import { deleteBoard, setupBoard } from "../../helpers/board-helpers";
 import { createListData } from "../../data/lists.data";
 import { assertName, assertStatusCode } from "../../helpers/assertions";
 import { assertHasProperty } from "../../helpers/assertions";
@@ -11,7 +11,7 @@ test.describe("POST - Create List", () => {
 
   test.beforeAll(async ({ request }) => {
     // create BOARD
-    boardID = await createBoard(request);
+    boardID = await setupBoard(request);
   });
 
   test.afterAll(async ({ request }) => {
