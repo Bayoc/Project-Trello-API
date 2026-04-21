@@ -1,8 +1,9 @@
 import { test } from "@playwright/test";
-import { authParams } from "../../helpers/auth-helpers";
+import { authParams } from "../../helpers/setup/auth-setup";
 import { ENDPOINTS } from "../../data/endpoints";
-import { setupBoard, deleteBoard } from "../../helpers/board-helpers";
+import { setupBoard } from "../../helpers/setup/board-setup";
 import { ERROR_MESSAGES } from "../../data/error_messages";
+import { deleteBoard } from "../../helpers/api/board-api";
 import {
   assertStatusCode,
   assertHasProperty,

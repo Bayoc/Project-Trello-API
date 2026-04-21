@@ -1,6 +1,6 @@
 import { test, expect, APIResponse } from "@playwright/test";
 import { ENDPOINTS } from "../data/endpoints";
-import { authParams } from "../helpers/auth-helpers";
+import { authParams } from "../helpers/setup/auth-setup";
 import { assertStatusCode } from "../helpers/assertions";
 
 test.describe("Security Headers", () => {

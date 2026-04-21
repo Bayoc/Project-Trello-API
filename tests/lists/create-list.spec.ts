@@ -1,10 +1,11 @@
 import { test, expect } from "@playwright/test";
 import { ENDPOINTS } from "../../data/endpoints";
-import { authParams } from "../../helpers/auth-helpers";
-import { deleteBoard, setupBoard } from "../../helpers/board-helpers";
+import { authParams } from "../../helpers/setup/auth-setup";
+import { setupBoard } from "../../helpers/setup/board-setup";
 import { createListData } from "../../data/lists.data";
 import { assertName, assertStatusCode } from "../../helpers/assertions";
 import { assertHasProperty } from "../../helpers/assertions";
+import { deleteBoard } from "../../helpers/api/board-api";
 
 test.describe("POST - Create List", () => {
   let boardID: string = "";

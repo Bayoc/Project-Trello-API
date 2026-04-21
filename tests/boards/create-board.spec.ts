@@ -1,8 +1,8 @@
 import { test } from "@playwright/test";
 import { ENDPOINTS } from "../../data/endpoints";
 import { createBoardData } from "../../data/board.data";
-import { authParams } from "../../helpers/auth-helpers";
-import { deleteBoard } from "../../helpers/board-helpers";
+import { authParams } from "../../helpers/setup/auth-setup";
+import { deleteBoard, createBoard } from "../../helpers/api/board-api";
 import {
   assertStatusCode,
   assertName,
@@ -23,13 +23,10 @@ test.describe("CREATE Board", () => {
     test("POST - should create a new board with valid data", async ({
       request,
     }) => {
-      const response = await request.post(ENDPOINTS.BOARD.BASE, {
-        params: authParams,
-        data: createBoardData,
-      });
+      const response = await createBoard(request, createBoardData.name);
+      const body = await response.json();
 
       assertStatusCode(response, 200);
-      const body = await response.json();
       assertName(body, createBoardData.name);
       assertHasProperty(body, "id");
 
@@ -40,13 +37,10 @@ test.describe("CREATE Board", () => {
       request,
     }) => {
       const longName = "a".repeat(16384);
-      const response = await request.post(ENDPOINTS.BOARD.BASE, {
-        params: authParams,
-        data: { name: longName },
-      });
+      const response = await createBoard(request, longName);
+      const body = await response.json();
 
       assertStatusCode(response, 200);
-      const body = await response.json();
       assertHasProperty(body, "id");
       assertName(body, longName);
 

@@ -1,15 +1,12 @@
 import { test } from "@playwright/test";
-import {
-  setupBoard,
-  deleteBoard,
-  updateBoard,
-} from "../../helpers/board-helpers";
+import { setupBoard, updateBoard } from "../../helpers/setup/board-setup";
 import {
   assertStatusCode,
   assertName,
   assertErrorText,
 } from "../../helpers/assertions";
 import { ERROR_MESSAGES } from "../../data/error_messages";
+import { deleteBoard } from "../../helpers/api/board-api";
 
 test.describe("PUT Board", () => {
   let boardID: string = "";
