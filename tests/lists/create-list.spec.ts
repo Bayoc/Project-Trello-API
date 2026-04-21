@@ -6,6 +6,7 @@ import { createListData } from "../../data/lists.data";
 import { assertName, assertStatusCode } from "../../helpers/assertions";
 import { assertHasProperty } from "../../helpers/assertions";
 import { deleteBoard } from "../../helpers/api/board-api";
+import { boardData } from "../../data/board.data";
 
 test.describe("POST - Create List", () => {
   let boardID: string = "";
@@ -45,7 +46,7 @@ test.describe("POST - Create List", () => {
         params: authParams,
         data: {
           name: createListData.name,
-          idBoard: "aaaaaaaaaaaaaaaaaaaaaaaa",
+          idBoard: boardData.invalidBoardIdData.id,
         },
       });
       expect(response.status()).toBe(401);
