@@ -1,6 +1,6 @@
 import { test } from "@playwright/test";
 import { ENDPOINTS } from "../../data/endpoints";
-import { createBoardData } from "../../data/board.data";
+import { boardData } from "../../data/board.data";
 import { authParams } from "../../helpers/setup/auth-setup";
 import { deleteBoard, createBoard } from "../../helpers/api/board-api";
 import {
@@ -23,11 +23,14 @@ test.describe("CREATE Board", () => {
     test("POST - should create a new board with valid data", async ({
       request,
     }) => {
-      const response = await createBoard(request, createBoardData.name);
+      const response = await createBoard(
+        request,
+        boardData.createBoardData.name,
+      );
       const body = await response.json();
 
       assertStatusCode(response, 200);
-      assertName(body, createBoardData.name);
+      assertName(body, boardData.createBoardData.name);
       assertHasProperty(body, "id");
 
       boardID = body.id;
@@ -36,14 +39,13 @@ test.describe("CREATE Board", () => {
     test("POST Create Board with characters limit in name - should return 200 and create board", async ({
       request,
     }) => {
-      const longName = "a".repeat(16384);
-      const response = await createBoard(request, longName);
+      const response = await createBoard(request, boardData.longNameData.name);
 
       assertStatusCode(response, 200);
 
       const body = await response.json();
       assertHasProperty(body, "id");
-      assertName(body, longName);
+      assertName(body, boardData.longNameData.name);
 
       boardID = body.id;
     });

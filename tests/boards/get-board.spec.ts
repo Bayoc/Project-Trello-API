@@ -10,6 +10,7 @@ import {
   assertID,
   assertErrorText,
 } from "../../helpers/assertions";
+import { boardData } from "../../data/board.data";
 
 test.describe("GET Board", () => {
   let boardID: string = "";
@@ -46,7 +47,7 @@ test.describe("GET Board", () => {
       request,
     }) => {
       const response = await request.get(
-        ENDPOINTS.BOARD.BY_ID("aaaaaaaaaaaaaaaaaaaaaaaa"),
+        ENDPOINTS.BOARD.BY_ID(boardData.invalidBoardIdData.id),
         {
           params: authParams,
         },

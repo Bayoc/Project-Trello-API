@@ -1,12 +1,12 @@
 import { APIRequestContext } from "@playwright/test";
 import { authParams } from "./auth-setup";
 import { ENDPOINTS } from "../../data/endpoints";
-import { createBoardData } from "../../data/board.data";
+import { boardData } from "../../data/board.data";
 
 export async function setupBoard(request: APIRequestContext) {
   const response = await request.post(ENDPOINTS.BOARD.BASE, {
     params: authParams,
-    data: createBoardData,
+    data: boardData.createBoardData,
   });
   const body = await response.json();
   return body.id;
