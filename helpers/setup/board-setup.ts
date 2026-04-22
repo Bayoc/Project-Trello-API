@@ -7,7 +7,7 @@ import { createBoard } from "../api/board-api";
 export async function setupBoard(request: APIRequestContext, name?: string) {
   const response = await createBoard(
     request,
-    name ?? boardData.createBoardData.name,
+    name ?? boardData.validBoardData.name,
   );
   const body = await response.json();
   return body.id;

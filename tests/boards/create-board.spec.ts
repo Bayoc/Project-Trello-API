@@ -25,12 +25,12 @@ test.describe("CREATE Board", () => {
     }) => {
       const response = await createBoard(
         request,
-        boardData.createBoardData.name,
+        boardData.validBoardData.name,
       );
       const body = await response.json();
 
       assertStatusCode(response, 200);
-      assertName(body, boardData.createBoardData.name);
+      assertName(body, boardData.validBoardData.name);
       assertHasProperty(body, "id");
 
       boardID = body.id;

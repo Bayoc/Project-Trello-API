@@ -5,6 +5,7 @@ import { setupBoard } from "../../helpers/setup/board-setup";
 import { assertStatusCode, assertErrorText } from "../../helpers/assertions";
 import { ERROR_MESSAGES } from "../../data/error_messages";
 import { deleteBoard } from "../../helpers/api/board-api";
+import { boardData } from "../../data/board.data";
 
 test.describe("DELETE Board", () => {
   let boardID: string = "";
@@ -38,7 +39,7 @@ test.describe("DELETE Board", () => {
       request,
     }) => {
       const response = await request.delete(
-        ENDPOINTS.BOARD.BY_ID("aaaaaaaaaaaaaaaaaaaaaaaa"),
+        ENDPOINTS.BOARD.BY_ID(boardData.invalidBoardIdData.id),
         {
           params: authParams,
         },

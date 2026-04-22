@@ -1,17 +1,17 @@
-export type CreateBoard = {
+export type BoardData = {
   name: string;
 };
 
-const createBoardData: CreateBoard = { name: "Test Board" };
+const validBoardData: BoardData = { name: "Test Board" };
 
-const updateBoardData: CreateBoard = { name: "Updated Board" };
+const updateBoardData: BoardData = { name: "Updated Board" };
 
-const longNameData: CreateBoard = { name: "a".repeat(16384) };
+const longNameData: BoardData = { name: "a".repeat(16384) };
 
 const invalidBoardIdData = { id: "aaaaaaaaaaaaaaaaaaaaaaaa" };
 
 export const boardData = {
-  createBoardData,
+  validBoardData,
   updateBoardData,
   longNameData,
   invalidBoardIdData,
