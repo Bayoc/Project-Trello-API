@@ -11,19 +11,20 @@ export type BoardManagement = {
 
 export const test = base.extend<{ boardManagement: BoardManagement }>({
   boardManagement: async ({ request }, use) => {
-    // 1. SETUP: Lokalny stan dla konkretnego testu (izolacja)
     const boardsToCleanup: string[] = [];
 
-    // 2. PRZEKAZANIE KONTROLI: Udostępnienie metod do testu
     await use({
-      createBoard: (name?: string) => setupBoard(request, name),
+      createBoard: async (name?: string) => {
+        const boardId = await setupBoard(request, name);
+        boardsToCleanup.push(boardId); //
+        return boardId;
+      },
       deleteBoard: (boardId: string) => deleteBoard(request, boardId),
       addBoardForCleanup: (boardId: string) => {
         boardsToCleanup.push(boardId);
       },
     });
 
-    // 3. TEARDOWN: Automatyczne sprzątanie po zakończeniu testu
     for (const boardId of boardsToCleanup) {
       const response = await deleteBoard(request, boardId);
       if (!response.ok()) {

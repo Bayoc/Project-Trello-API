@@ -5,10 +5,9 @@ import { boardData } from "../../data/board.data";
 import { createBoard } from "../api/board-api";
 
 export async function setupBoard(request: APIRequestContext, name?: string) {
-  const response = await createBoard(
-    request,
-    name ?? boardData.validBoardData.name,
-  );
+  const response = await createBoard(request, {
+    name: name ?? boardData.validBoardData.name,
+  });
   const body = await response.json();
   return body.id;
 }
