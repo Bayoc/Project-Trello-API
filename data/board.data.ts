@@ -6,13 +6,16 @@ const validBoardData: BoardData = { name: "Test Board" };
 
 const updateBoardData: BoardData = { name: "Updated Board" };
 
-const longNameData: BoardData = { name: "a".repeat(16384) };
+const longNameValidData: BoardData = { name: "a".repeat(16384) };
+
+const longNameInvalidData: BoardData = { name: "a".repeat(16385) };
 
 const invalidBoardIdData = { id: "aaaaaaaaaaaaaaaaaaaaaaaa" };
 
 export const boardData = {
   validBoardData,
   updateBoardData,
-  longNameData,
+  longNameValidData,
+  longNameInvalidData,
   invalidBoardIdData,
 };

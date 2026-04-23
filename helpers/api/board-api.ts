@@ -2,10 +2,13 @@ import { APIRequestContext } from "@playwright/test";
 import { authParams } from "../setup/auth-setup";
 import { ENDPOINTS } from "../../data/endpoints";
 
-export const createBoard = (request: APIRequestContext, name: string) =>
+export const createBoard = (
+  request: APIRequestContext,
+  payload?: Record<string, unknown>,
+) =>
   request.post(ENDPOINTS.BOARD.BASE, {
     params: authParams,
-    data: { name },
+    data: payload,
   });
 
 export const deleteBoard = (request: APIRequestContext, boardId: string) =>
