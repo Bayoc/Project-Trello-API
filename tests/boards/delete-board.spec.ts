@@ -7,7 +7,7 @@ import { test } from "../../fixtures/board-fixtures";
 test.describe("DELETE Board", () => {
   test.describe("Positive Scenarios", () => {
     test("DELETE Board - board should be deleted", async ({
-      request,
+      apiClient,
       boardManagement,
     }) => {
       const boardId = await boardManagement.createBoard(
@@ -17,14 +17,14 @@ test.describe("DELETE Board", () => {
       const deleteResponse = await boardManagement.deleteBoard(boardId);
       assertStatusCode(deleteResponse, 200);
 
-      const getResponse = await getBoard(request, boardId);
+      const getResponse = await getBoard(apiClient, boardId);
       assertStatusCode(getResponse, 404);
     });
   });
 
   test.describe("Negative Scenarios", () => {
     test("DELETE Board with invalid ID - should return 404 not found", async ({
-      request,
+      apiClient,
       boardManagement,
     }) => {
       const boardId = await boardManagement.createBoard(
@@ -38,7 +38,7 @@ test.describe("DELETE Board", () => {
       assertStatusCode(deleteResponse, 404);
       assertErrorText(deleteResponse, ERROR_MESSAGES.notFound);
 
-      const getResponse = await getBoard(request, boardId);
+      const getResponse = await getBoard(apiClient, boardId);
       assertStatusCode(getResponse, 200);
     });
   });

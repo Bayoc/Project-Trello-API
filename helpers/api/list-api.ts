@@ -1,12 +1,10 @@
-import { APIRequestContext } from "@playwright/test";
-import { authParams } from "../setup/auth-setup";
 import { ENDPOINTS } from "../../data/endpoints";
+import { BaseApiClient, RequestOptions } from "./base-api";
 
 export const createList = (
-  request: APIRequestContext,
-  payload?: Record<string, unknown>,
+  apiClient: BaseApiClient,
+  options?: RequestOptions, // Używamy naszego precyzyjnego interfejsu
 ) =>
-  request.post(ENDPOINTS.LIST.BASE, {
-    params: authParams,
-    data: payload,
+  apiClient.post(ENDPOINTS.LIST.BASE, {
+    ...options, // Przekazujemy opcje prosto do wrappera
   });

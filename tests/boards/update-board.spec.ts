@@ -11,14 +11,14 @@ import { boardData } from "../../data/board.data";
 test.describe("PUT Board", () => {
   test.describe("Positive Scenarios", () => {
     test("PUT Update Board Name - board name should be updated", async ({
-      request,
+      apiClient,
       boardManagement,
     }) => {
       const boardId = await boardManagement.createBoard(
         boardData.validBoardData.name,
       );
-      const response = await updateBoard(request, boardId, {
-        name: boardData.updateBoardData.name,
+      const response = await updateBoard(apiClient, boardId, {
+        data: { name: boardData.updateBoardData.name },
       });
 
       const body = await response.json();
@@ -30,13 +30,13 @@ test.describe("PUT Board", () => {
 
   test.describe("Negative Scenarios", () => {
     test("PUT Update Board with invalid ID - should return 404 not found", async ({
-      request,
+      apiClient,
     }) => {
       const response = await updateBoard(
-        request,
+        apiClient,
         boardData.invalidBoardIdData.id,
         {
-          name: boardData.updateBoardData.name,
+          data: { name: boardData.updateBoardData.name },
         },
       );
       assertStatusCode(response, 404);

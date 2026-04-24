@@ -12,14 +12,14 @@ import { boardData } from "../../data/board.data";
 test.describe("GET Board", () => {
   test.describe("Positive Scenarios", () => {
     test("GET Board with valid ID - should return 200 and board ID", async ({
-      request,
+      apiClient,
       boardManagement,
     }) => {
       const boardId = await boardManagement.createBoard(
         boardData.validBoardData.name,
       );
 
-      const response = await getBoard(request, boardId);
+      const response = await getBoard(apiClient, boardId);
       const body = await response.json();
 
       assertStatusCode(response, 200);
@@ -30,9 +30,12 @@ test.describe("GET Board", () => {
 
   test.describe("Negative Scenarios", () => {
     test("GET Board with invalid ID - should return 404 not found", async ({
-      request,
+      apiClient,
     }) => {
-      const response = await getBoard(request, boardData.invalidBoardIdData.id);
+      const response = await getBoard(
+        apiClient,
+        boardData.invalidBoardIdData.id,
+      );
       assertStatusCode(response, 404);
       await assertErrorText(response, ERROR_MESSAGES.notFound);
     });

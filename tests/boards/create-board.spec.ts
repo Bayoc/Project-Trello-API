@@ -12,11 +12,11 @@ import { test } from "../../fixtures/board-fixtures";
 test.describe("CREATE Board", () => {
   test.describe("Positive Scenarios", () => {
     test("POST - should create a new board with valid data", async ({
-      request,
+      apiClient,
       boardManagement,
     }) => {
-      const response = await createBoard(request, {
-        name: boardData.validBoardData.name,
+      const response = await createBoard(apiClient, {
+        data: { name: boardData.validBoardData.name },
       });
       const body = await response.json();
 
@@ -28,11 +28,11 @@ test.describe("CREATE Board", () => {
     });
 
     test("should create a board with maximum allowed name length", async ({
-      request,
+      apiClient,
       boardManagement,
     }) => {
-      const response = await createBoard(request, {
-        name: boardData.longNameValidData.name,
+      const response = await createBoard(apiClient, {
+        data: { name: boardData.longNameValidData.name },
       });
       const body = await response.json();
 
@@ -46,19 +46,19 @@ test.describe("CREATE Board", () => {
 
   test.describe("Negative Scenarios", () => {
     test("should return error when creating a board without a name", async ({
-      request,
+      apiClient,
     }) => {
-      const response = await createBoard(request);
+      const response = await createBoard(apiClient);
 
       assertStatusCode(response, 400);
       await assertErrorText(response, ERROR_MESSAGES.badNameRequest);
     });
 
     test("should return error when board name exceeds character limit", async ({
-      request,
+      apiClient,
     }) => {
-      const response = await createBoard(request, {
-        name: boardData.longNameInvalidData.name,
+      const response = await createBoard(apiClient, {
+        data: { name: boardData.longNameInvalidData.name },
       });
 
       assertStatusCode(response, 400);

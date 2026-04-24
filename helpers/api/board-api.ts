@@ -1,32 +1,22 @@
-import { APIRequestContext } from "@playwright/test";
-import { authParams } from "../setup/auth-setup";
 import { ENDPOINTS } from "../../data/endpoints";
+import { BaseApiClient, RequestOptions } from "./base-api";
 
 export const createBoard = (
-  request: APIRequestContext,
-  payload?: Record<string, unknown>,
+  apiClient: BaseApiClient,
+  options?: RequestOptions,
 ) =>
-  request.post(ENDPOINTS.BOARD.BASE, {
-    params: authParams,
-    data: payload,
+  apiClient.post(ENDPOINTS.BOARD.BASE, {
+    ...options,
   });
 
-export const deleteBoard = (request: APIRequestContext, boardId: string) =>
-  request.delete(ENDPOINTS.BOARD.BY_ID(boardId), {
-    params: authParams,
-  });
+export const deleteBoard = (apiClient: BaseApiClient, boardId: string) =>
+  apiClient.delete(ENDPOINTS.BOARD.BY_ID(boardId));
 
-export const getBoard = (request: APIRequestContext, boardId: string) =>
-  request.get(ENDPOINTS.BOARD.BY_ID(boardId), {
-    params: authParams,
-  });
+export const getBoard = (apiClient: BaseApiClient, boardId: string) =>
+  apiClient.get(ENDPOINTS.BOARD.BY_ID(boardId));
 
 export const updateBoard = (
-  request: APIRequestContext,
-  id: string,
-  payload?: Record<string, unknown>,
-) =>
-  request.put(ENDPOINTS.BOARD.BY_ID(id), {
-    params: authParams,
-    data: payload,
-  });
+  apiClient: BaseApiClient,
+  boardId: string,
+  options?: RequestOptions,
+) => apiClient.put(ENDPOINTS.BOARD.BY_ID(boardId), options);
