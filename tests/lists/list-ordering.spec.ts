@@ -1,38 +1,23 @@
-import { test, expect } from "@playwright/test";
-import { ENDPOINTS } from "../../data/endpoints";
-import { authParams } from "../../helpers/setup/auth-setup";
-import { setupBoard } from "../../helpers/setup/board-setup";
-import { createListData } from "../../data/lists.data";
+import { expect } from "@playwright/test";
+import { validListData } from "../../data/lists.data";
 import { assertHasProperty, assertStatusCode } from "../../helpers/assertions";
-import { deleteBoard } from "../../helpers/api/board-api";
+import { test } from "../../fixtures/board-fixtures";
+import { createList } from "../../helpers/api/list-api";
 
 test.describe("POST - List Ordering", () => {
-  let boardID: string = "";
-
-  test.beforeAll(async ({ request }) => {
-    // create BOARD
-    boardID = await setupBoard(request);
-  });
-
-  test.afterAll(async ({ request }) => {
-    // cleanup - delete board
-    await deleteBoard(request, boardID);
-  });
-
   test.describe("Positive Scenarios", () => {
     test("POST Create List - should calculate and assign dynamic positions (bottom and middle)", async ({
       request,
+      boardManagement,
     }) => {
       let pos1: number = 0;
       let pos2: number = 0;
+      const boardId = await boardManagement.createBoard("List Ordering Board");
 
       // 1. First List (base position)
-      const response = await request.post(ENDPOINTS.LIST.BASE, {
-        params: authParams,
-        data: {
-          name: createListData.name,
-          idBoard: boardID,
-        },
+      const response = await createList(request, {
+        name: validListData.name,
+        idBoard: boardId,
       });
 
       assertStatusCode(response, 200);
@@ -41,13 +26,10 @@ test.describe("POST - List Ordering", () => {
       pos1 = body.pos;
 
       // 2. Second List (right side / at the end)
-      const responsePos2 = await request.post(ENDPOINTS.LIST.BASE, {
-        params: authParams,
-        data: {
-          name: createListData.name,
-          idBoard: boardID,
-          pos: pos1 + 1,
-        },
+      const responsePos2 = await createList(request, {
+        name: validListData.name,
+        idBoard: boardId,
+        pos: pos1 + 1000, // Intentionally large to ensure it's at the end
       });
 
       assertStatusCode(responsePos2, 200);
@@ -57,13 +39,10 @@ test.describe("POST - List Ordering", () => {
       pos2 = body2.pos;
 
       // 2. Third List (Between first and second list)
-      const responsePos3 = await request.post(ENDPOINTS.LIST.BASE, {
-        params: authParams,
-        data: {
-          name: createListData.name,
-          idBoard: boardID,
-          pos: (pos1 + pos2) / 2,
-        },
+      const responsePos3 = await createList(request, {
+        name: validListData.name,
+        idBoard: boardId,
+        pos: (pos1 + pos2) / 2, // Intentionally large to ensure it's at the end
       });
 
       assertStatusCode(responsePos3, 200);
@@ -77,14 +56,13 @@ test.describe("POST - List Ordering", () => {
   test.describe("Negative Scenarios", () => {
     test('POST Create List - invalid enum string ("middle") should return 400', async ({
       request,
+      boardManagement,
     }) => {
-      const response = await request.post(ENDPOINTS.LIST.BASE, {
-        params: authParams,
-        data: {
-          name: createListData.name,
-          idBoard: boardID,
-          pos: "middle",
-        },
+      const boardId = await boardManagement.createBoard("List Ordering Board");
+      const response = await createList(request, {
+        name: validListData.name,
+        idBoard: boardId,
+        pos: "middle", // Invalid enum value
       });
       assertStatusCode(response, 400);
     });
@@ -92,13 +70,10 @@ test.describe("POST - List Ordering", () => {
     test("POST Create List - missing parent idBoard should return 400", async ({
       request,
     }) => {
-      const response = await request.post(ENDPOINTS.LIST.BASE, {
-        params: authParams,
-        data: {
-          name: createListData.name,
-          pos: "top",
-        },
-        // intentional missing idBoard
+      const response = await createList(request, {
+        name: validListData.name,
+        // idBoard is intentionally missing
+        pos: "top",
       });
       assertStatusCode(response, 400);
     });
