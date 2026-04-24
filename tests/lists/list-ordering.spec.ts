@@ -1,6 +1,10 @@
-import { expect } from "@playwright/test";
 import { validListData } from "../../data/lists.data";
-import { assertHasProperty, assertStatusCode } from "../../helpers/assertions";
+import {
+  assertHasProperty,
+  assertPositionIsGreaterThan,
+  assertPositionIsLessThan,
+  assertStatusCode,
+} from "../../helpers/assertions";
 import { test } from "../../fixtures/board-fixtures";
 import { createList } from "../../helpers/api/list-api";
 
@@ -35,21 +39,21 @@ test.describe("POST - List Ordering", () => {
 
       assertStatusCode(responsePos2, 200);
       assertHasProperty(body2, "pos");
-      expect(body2.pos).toBeGreaterThan(pos1);
+      assertPositionIsGreaterThan(body2, pos1);
       pos2 = body2.pos;
 
       // 2. Third List (Between first and second list)
       const responsePos3 = await createList(request, {
         name: validListData.name,
         idBoard: boardId,
-        pos: (pos1 + pos2) / 2, // Intentionally large to ensure it's at the end
+        pos: (pos1 + pos2) / 2,
       });
       const body3 = await responsePos3.json();
 
       assertStatusCode(responsePos3, 200);
       assertHasProperty(body3, "pos");
-      expect(body3.pos).toBeGreaterThan(pos1);
-      expect(body3.pos).toBeLessThan(pos2);
+      assertPositionIsGreaterThan(body3, pos1);
+      assertPositionIsLessThan(body3, pos2);
     });
   });
 

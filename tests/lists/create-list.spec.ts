@@ -1,4 +1,3 @@
-import { expect } from "@playwright/test";
 import { validListData } from "../../data/lists.data";
 import { assertName, assertStatusCode } from "../../helpers/assertions";
 import { assertHasProperty } from "../../helpers/assertions";
@@ -35,7 +34,7 @@ test.describe("POST - Create List", () => {
         name: validListData.name,
         idBoard: boardData.invalidBoardIdData.id, // Invalid board ID
       });
-      expect(response.status()).toBe(401);
+      assertStatusCode(response, 401);
       // Trello returns 401 for invalid idBoard for security reasons - 404 would reveal resource existence
     });
 
