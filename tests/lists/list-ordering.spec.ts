@@ -19,11 +19,11 @@ test.describe("POST - List Ordering", () => {
         name: validListData.name,
         idBoard: boardId,
       });
+      const body1 = await response.json();
 
       assertStatusCode(response, 200);
-      const body = await response.json();
-      assertHasProperty(body, "pos");
-      pos1 = body.pos;
+      assertHasProperty(body1, "pos");
+      pos1 = body1.pos;
 
       // 2. Second List (right side / at the end)
       const responsePos2 = await createList(request, {
@@ -31,9 +31,9 @@ test.describe("POST - List Ordering", () => {
         idBoard: boardId,
         pos: pos1 + 1000, // Intentionally large to ensure it's at the end
       });
+      const body2 = await responsePos2.json();
 
       assertStatusCode(responsePos2, 200);
-      const body2 = await responsePos2.json();
       assertHasProperty(body2, "pos");
       expect(body2.pos).toBeGreaterThan(pos1);
       pos2 = body2.pos;
@@ -44,9 +44,9 @@ test.describe("POST - List Ordering", () => {
         idBoard: boardId,
         pos: (pos1 + pos2) / 2, // Intentionally large to ensure it's at the end
       });
+      const body3 = await responsePos3.json();
 
       assertStatusCode(responsePos3, 200);
-      const body3 = await responsePos3.json();
       assertHasProperty(body3, "pos");
       expect(body3.pos).toBeGreaterThan(pos1);
       expect(body3.pos).toBeLessThan(pos2);
