@@ -20,3 +20,13 @@ export const getBoard = (request: APIRequestContext, boardId: string) =>
   request.get(ENDPOINTS.BOARD.BY_ID(boardId), {
     params: authParams,
   });
+
+export const updateBoard = (
+  request: APIRequestContext,
+  id: string,
+  payload?: Record<string, unknown>,
+) =>
+  request.put(ENDPOINTS.BOARD.BY_ID(id), {
+    params: authParams,
+    data: payload,
+  });

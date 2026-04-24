@@ -1,7 +1,7 @@
 import { APIResponse } from "@playwright/test";
 import { test as base } from "@playwright/test";
-import { setupBoard } from "../helpers/setup/board-setup";
-import { deleteBoard } from "../helpers/api/board-api";
+import { createBoard, deleteBoard } from "../helpers/api/board-api";
+import { boardData } from "../data/board.data";
 
 export type BoardManagement = {
   createBoard: (name?: string) => Promise<string>;
@@ -15,8 +15,12 @@ export const test = base.extend<{ boardManagement: BoardManagement }>({
 
     await use({
       createBoard: async (name?: string) => {
-        const boardId = await setupBoard(request, name);
-        boardsToCleanup.push(boardId); //
+        const response = await createBoard(request, {
+          name: name ?? boardData.validBoardData.name,
+        });
+        const body = await response.json();
+        const boardId = body.id;
+        boardsToCleanup.push(boardId);
         return boardId;
       },
       deleteBoard: (boardId: string) => deleteBoard(request, boardId),
