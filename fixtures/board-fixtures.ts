@@ -40,10 +40,24 @@ export const test = base.extend<{
     });
 
     for (const boardId of boardsToCleanup) {
-      const response = await deleteBoard(apiClient, boardId);
-      if (!response.ok()) {
+      try {
+        const response = await deleteBoard(apiClient, boardId);
+
+        // Obsługa błędów biznesowych / HTTP (np. 500, 401)
+        if (!response.ok()) {
+          const errorBody = await response.text();
+          // eslint-disable-next-line no-console
+          console.error(
+            `[TEARDOWN ERROR] Failed to delete board ID: ${boardId}. HTTP Status: ${response.status()}. Details: ${errorBody}`,
+          );
+        }
+      } catch (error) {
+        // Obsługa krytycznych błędów infrastruktury (np. Timeout, Network Error)
         // eslint-disable-next-line no-console
-        console.error(`Cleanup failed for board ID: ${boardId}`);
+        console.error(
+          `[TEARDOWN CRASH] Execution failed for board ID: ${boardId}. Reason:`,
+          error,
+        );
       }
     }
   },

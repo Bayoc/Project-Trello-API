@@ -4,10 +4,7 @@ import { BaseApiClient, RequestOptions } from "./base-api";
 export const createBoard = (
   apiClient: BaseApiClient,
   options?: RequestOptions,
-) =>
-  apiClient.post(ENDPOINTS.BOARD.BASE, {
-    ...options,
-  });
+) => apiClient.post(ENDPOINTS.BOARD.BASE, options);
 
 export const deleteBoard = (apiClient: BaseApiClient, boardId: string) =>
   apiClient.delete(ENDPOINTS.BOARD.BY_ID(boardId));
