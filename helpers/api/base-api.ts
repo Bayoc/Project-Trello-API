@@ -5,6 +5,7 @@ export interface RequestOptions {
   data?: unknown;
   params?: Record<string, string | number | boolean>;
   headers?: Record<string, string>;
+  omitAuth?: boolean;
 }
 
 export class BaseApiClient {
@@ -15,30 +16,45 @@ export class BaseApiClient {
   }
 
   async get(endpoint: string, options?: RequestOptions) {
+    const finalParams = options?.omitAuth
+      ? options?.params
+      : { ...authParams, ...options?.params };
+
     return this.request.get(endpoint, {
       ...options,
-      params: { ...authParams, ...options?.params },
+      params: finalParams,
     });
   }
 
   async post(endpoint: string, options?: RequestOptions) {
+    const finalParams = options?.omitAuth
+      ? options?.params
+      : { ...authParams, ...options?.params };
+
     return this.request.post(endpoint, {
       ...options,
-      params: { ...authParams, ...options?.params },
+      params: finalParams,
     });
   }
 
   async put(endpoint: string, options?: RequestOptions) {
+    const finalParams = options?.omitAuth
+      ? options?.params
+      : { ...authParams, ...options?.params };
+
     return this.request.put(endpoint, {
       ...options,
-      params: { ...authParams, ...options?.params },
+      params: finalParams,
     });
   }
 
   async delete(endpoint: string, options?: RequestOptions) {
+    const finalParams = options?.omitAuth
+      ? options?.params
+      : { ...authParams, ...options?.params };
     return this.request.delete(endpoint, {
       ...options,
-      params: { ...authParams, ...options?.params },
+      params: finalParams,
     });
   }
 }
