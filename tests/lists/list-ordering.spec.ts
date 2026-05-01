@@ -1,4 +1,3 @@
-import { validListData } from "../../data/lists.data";
 import {
   assertHasProperty,
   assertPositionIsGreaterThan,
@@ -7,6 +6,8 @@ import {
 } from "../../helpers/assertions";
 import { test } from "../../fixtures/board-fixtures";
 import { createList } from "../../helpers/api/list-api";
+import { buildBoard } from "../../helpers/factories/board-factory";
+import { buildList } from "../../helpers/factories/list-factory";
 
 test.describe("POST - List Ordering", () => {
   test.describe("Positive Scenarios", () => {
@@ -14,12 +15,12 @@ test.describe("POST - List Ordering", () => {
       apiClient,
       boardManagement,
     }) => {
-      const boardId = await boardManagement.createBoard("List Ordering Board");
+      const boardId = await boardManagement.createBoard(buildBoard().name);
 
       // 1. First List (base position)
       const response = await createList(apiClient, {
         data: {
-          name: validListData.name,
+          name: buildList().name,
           idBoard: boardId,
         },
       });
@@ -32,7 +33,7 @@ test.describe("POST - List Ordering", () => {
       // 2. Second List (right side / at the end)
       const responsePos2 = await createList(apiClient, {
         data: {
-          name: validListData.name,
+          name: buildList().name,
           idBoard: boardId,
           pos: pos1 + 1000, // Intentionally large to ensure it's at the end
         },
@@ -47,7 +48,7 @@ test.describe("POST - List Ordering", () => {
       // 3. Third List (Between first and second list)
       const responsePos3 = await createList(apiClient, {
         data: {
-          name: validListData.name,
+          name: buildList().name,
           idBoard: boardId,
           pos: (pos1 + pos2) / 2,
         },
@@ -69,7 +70,7 @@ test.describe("POST - List Ordering", () => {
       const boardId = await boardManagement.createBoard("List Ordering Board");
       const response = await createList(apiClient, {
         data: {
-          name: validListData.name,
+          name: buildList().name,
           idBoard: boardId,
           pos: "middle", // Invalid enum value
         },
@@ -82,7 +83,7 @@ test.describe("POST - List Ordering", () => {
     }) => {
       const response = await createList(apiClient, {
         data: {
-          name: validListData.name,
+          name: buildList().name,
           // idBoard is intentionally missing
           pos: "top",
         },

@@ -1,9 +1,12 @@
-import { validListData } from "../../data/lists.data";
 import { assertName, assertStatusCode } from "../../helpers/assertions";
 import { assertHasProperty } from "../../helpers/assertions";
 import { createList } from "../../helpers/api/list-api";
-import { boardData } from "../../data/board.data";
 import { test } from "../../fixtures/board-fixtures";
+import { buildList } from "../../helpers/factories/list-factory";
+import {
+  buildBoard,
+  buildInvalidBoardId,
+} from "../../helpers/factories/board-factory";
 
 test.describe("POST - Create List", () => {
   test.describe("Positive Scenarios", () => {
@@ -11,9 +14,8 @@ test.describe("POST - Create List", () => {
       apiClient,
       boardManagement,
     }) => {
-      const boardId = await boardManagement.createBoard(
-        boardData.validBoardData.name,
-      );
+      const boardId = await boardManagement.createBoard(buildBoard().name);
+      const validListData = buildList();
       const response = await createList(apiClient, {
         data: {
           name: validListData.name,
@@ -34,8 +36,8 @@ test.describe("POST - Create List", () => {
     }) => {
       const response = await createList(apiClient, {
         data: {
-          name: validListData.name,
-          idBoard: boardData.invalidBoardIdData.id, // Invalid board ID
+          name: buildList().name,
+          idBoard: buildInvalidBoardId().id, // Invalid board ID
         },
       });
       assertStatusCode(response, 401);
@@ -48,7 +50,7 @@ test.describe("POST - Create List", () => {
       const response = await createList(apiClient, {
         data: {
           name: "", // Empty name
-          idBoard: boardData.validBoardData, // Invalid board ID
+          idBoard: buildInvalidBoardId().id,
         },
       });
       assertStatusCode(response, 400);

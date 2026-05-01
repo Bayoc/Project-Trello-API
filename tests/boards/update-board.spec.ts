@@ -6,7 +6,10 @@ import {
   assertErrorText,
 } from "../../helpers/assertions";
 import { ERROR_MESSAGES } from "../../data/error_messages";
-import { boardData } from "../../data/board.data";
+import {
+  buildBoard,
+  buildInvalidBoardId,
+} from "../../helpers/factories/board-factory";
 
 test.describe("PUT Board", () => {
   test.describe("Positive Scenarios", () => {
@@ -14,17 +17,17 @@ test.describe("PUT Board", () => {
       apiClient,
       boardManagement,
     }) => {
-      const boardId = await boardManagement.createBoard(
-        boardData.validBoardData.name,
-      );
+      const newBoard = buildBoard();
+
+      const boardId = await boardManagement.createBoard(newBoard.name);
       const response = await updateBoard(apiClient, boardId, {
-        data: { name: boardData.updateBoardData.name },
+        data: newBoard.name,
       });
 
       const body = await response.json();
 
       assertStatusCode(response, 200);
-      assertName(body, boardData.updateBoardData.name);
+      assertName(body, newBoard.name);
     });
   });
 
@@ -32,13 +35,9 @@ test.describe("PUT Board", () => {
     test("PUT Update Board with invalid ID - should return 404 not found", async ({
       apiClient,
     }) => {
-      const response = await updateBoard(
-        apiClient,
-        boardData.invalidBoardIdData.id,
-        {
-          data: { name: boardData.updateBoardData.name },
-        },
-      );
+      const response = await updateBoard(apiClient, buildInvalidBoardId().id, {
+        data: buildInvalidBoardId().id,
+      });
       assertStatusCode(response, 404);
       await assertErrorText(response, ERROR_MESSAGES.notFound);
     });

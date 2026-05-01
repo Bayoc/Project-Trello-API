@@ -1,13 +1,13 @@
 import { APIRequestContext } from "@playwright/test";
 import { authParams } from "./auth-setup";
 import { ENDPOINTS } from "../../data/endpoints";
-import { createListData } from "../../data/lists.data";
+import { validListData } from "../../data/lists.data";
 
 export async function createList(request: APIRequestContext, idBoard: string) {
   const response = await request.post(ENDPOINTS.LIST.BASE, {
     params: authParams,
     data: {
-      name: createListData.name,
+      name: validListData.name,
       idBoard: idBoard,
     },
   });

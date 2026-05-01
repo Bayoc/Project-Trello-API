@@ -7,7 +7,10 @@ import {
   assertID,
   assertErrorText,
 } from "../../helpers/assertions";
-import { boardData } from "../../data/board.data";
+import {
+  buildBoard,
+  buildInvalidBoardId,
+} from "../../helpers/factories/board-factory";
 
 test.describe("GET Board", () => {
   test.describe("Positive Scenarios", () => {
@@ -15,9 +18,7 @@ test.describe("GET Board", () => {
       apiClient,
       boardManagement,
     }) => {
-      const boardId = await boardManagement.createBoard(
-        boardData.validBoardData.name,
-      );
+      const boardId = await boardManagement.createBoard(buildBoard().name);
 
       const response = await getBoard(apiClient, boardId);
       const body = await response.json();
@@ -32,10 +33,7 @@ test.describe("GET Board", () => {
     test("GET Board with invalid ID - should return 404 not found", async ({
       apiClient,
     }) => {
-      const response = await getBoard(
-        apiClient,
-        boardData.invalidBoardIdData.id,
-      );
+      const response = await getBoard(apiClient, buildInvalidBoardId().id);
       assertStatusCode(response, 404);
       await assertErrorText(response, ERROR_MESSAGES.notFound);
     });
