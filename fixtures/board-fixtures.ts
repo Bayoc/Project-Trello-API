@@ -1,8 +1,8 @@
 import { APIResponse } from "@playwright/test";
 import { test as base } from "@playwright/test";
 import { createBoard, deleteBoard } from "../helpers/api/board-api";
-import { boardData } from "../data/board.data";
 import { BaseApiClient } from "../helpers/api/base-api";
+import { buildBoard } from "../helpers/factories/board-factory";
 
 export type BoardManagement = {
   createBoard: (name?: string) => Promise<string>;
@@ -14,7 +14,7 @@ export const test = base.extend<{
   apiClient: BaseApiClient;
   boardManagement: BoardManagement;
 }>({
-  // 2. Definiujemy instancję apiClient
+  // Define a shared API client for all tests.
   apiClient: async ({ request }, use) => {
     const client = new BaseApiClient(request);
     await use(client);
@@ -26,7 +26,7 @@ export const test = base.extend<{
     await use({
       createBoard: async (name?: string) => {
         const response = await createBoard(apiClient, {
-          data: { name: name ?? boardData.validBoardData.name },
+          data: { name: name ?? buildBoard().name },
         });
         const body = await response.json();
         const boardId = body.id;
@@ -43,7 +43,6 @@ export const test = base.extend<{
       try {
         const response = await deleteBoard(apiClient, boardId);
 
-        // Obsługa błędów biznesowych / HTTP (np. 500, 401)
         if (!response.ok()) {
           const errorBody = await response.text();
           // eslint-disable-next-line no-console
@@ -52,7 +51,6 @@ export const test = base.extend<{
           );
         }
       } catch (error) {
-        // Obsługa krytycznych błędów infrastruktury (np. Timeout, Network Error)
         // eslint-disable-next-line no-console
         console.error(
           `[TEARDOWN CRASH] Execution failed for board ID: ${boardId}. Reason:`,

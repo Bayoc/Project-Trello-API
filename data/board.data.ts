@@ -1,4 +1,4 @@
-export type BoardData = {
+/*export type BoardData = {
   name: string;
 };
 
@@ -19,3 +19,7 @@ export const boardData = {
   longNameInvalidData,
   invalidBoardIdData,
 };
+*/
+
+// WORK IN PROGRESS - This file is being refactored to use factory functions
+// for generating test data, so the previous static data definitions have been commented out.
