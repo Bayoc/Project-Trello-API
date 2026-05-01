@@ -1,4 +1,4 @@
-import { test } from "../../fixtures/board-fixtures";
+import { test } from "../../fixtures/fixtures";
 import { getList } from "../../helpers/api/list-api";
 import { assertStatusCode } from "../../helpers/assertions";
 import { buildInvalidListId } from "../../helpers/factories/list-factory";

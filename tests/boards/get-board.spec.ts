@@ -1,4 +1,4 @@
-import { test } from "../../fixtures/board-fixtures";
+import { test } from "../../fixtures/fixtures";
 import { ERROR_MESSAGES } from "../../data/error_messages";
 import { getBoard } from "../../helpers/api/board-api";
 import {

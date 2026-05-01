@@ -1,7 +1,7 @@
 import { ENV } from "../playwright.config";
 import { assertStatusCode } from "../helpers/assertions";
 import { getMemberMe } from "../helpers/api/member-api";
-import { test } from "../fixtures/board-fixtures";
+import { test } from "../fixtures/fixtures";
 
 test.describe("Authentication", () => {
   test.describe("Negative Scenarios", () => {

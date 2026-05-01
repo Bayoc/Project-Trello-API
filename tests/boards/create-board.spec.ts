@@ -6,7 +6,7 @@ import {
   assertErrorText,
 } from "../../helpers/assertions";
 import { ERROR_MESSAGES } from "../../data/error_messages";
-import { test } from "../../fixtures/board-fixtures";
+import { test } from "../../fixtures/fixtures";
 import { buildBoard } from "../../helpers/factories/board-factory";
 
 test.describe("CREATE Board", () => {

@@ -4,7 +4,7 @@ import {
   assertPositionIsLessThan,
   assertStatusCode,
 } from "../../helpers/assertions";
-import { test } from "../../fixtures/board-fixtures";
+import { test } from "../../fixtures/fixtures";
 import { createList } from "../../helpers/api/list-api";
 import { buildBoard } from "../../helpers/factories/board-factory";
 import { buildList } from "../../helpers/factories/list-factory";

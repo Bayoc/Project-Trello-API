@@ -1,4 +1,4 @@
-import { test } from "../../fixtures/board-fixtures";
+import { test } from "../../fixtures/fixtures";
 import { updateBoard } from "../../helpers/api/board-api";
 import {
   assertStatusCode,

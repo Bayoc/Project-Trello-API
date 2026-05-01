@@ -1,7 +1,7 @@
 import { assertName, assertStatusCode } from "../../helpers/assertions";
 import { assertHasProperty } from "../../helpers/assertions";
 import { createList } from "../../helpers/api/list-api";
-import { test } from "../../fixtures/board-fixtures";
+import { test } from "../../fixtures/fixtures";
 import { buildList } from "../../helpers/factories/list-factory";
 import {
   buildBoard,
