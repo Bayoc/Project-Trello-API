@@ -10,3 +10,10 @@ export function buildList(overrides?: Partial<ListPayload>): ListPayload {
     ...overrides,
   };
 }
+
+export function buildInvalidListId(): { name: string; id: string } {
+  return {
+    name: "",
+    id: faker.database.mongodbObjectId(), // Generates a random 24-character hexadecimal string
+  };
+}
