@@ -1,6 +1,6 @@
 import { assertStatusCode, assertErrorText } from "../../helpers/assertions";
 import { ERROR_MESSAGES } from "../../data/error_messages";
-import { getBoard } from "../../helpers/api/board-api";
+import { getBoard, deleteBoard } from "../../helpers/api/board-api";
 import { test } from "../../fixtures/fixtures";
 import {
   buildBoard,
@@ -15,7 +15,7 @@ test.describe("DELETE Board", () => {
     }) => {
       const boardId = await boardManagement.createBoard(buildBoard.name);
 
-      const deleteResponse = await boardManagement.deleteBoard(boardId);
+      const deleteResponse = await deleteBoard(apiClient, boardId);
       assertStatusCode(deleteResponse, 200);
 
       const getResponse = await getBoard(apiClient, boardId);
@@ -30,7 +30,8 @@ test.describe("DELETE Board", () => {
     }) => {
       const boardId = await boardManagement.createBoard(buildBoard.name);
 
-      const deleteResponse = await boardManagement.deleteBoard(
+      const deleteResponse = await deleteBoard(
+        apiClient,
         buildInvalidBoardId().id,
       );
 
