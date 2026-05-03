@@ -21,25 +21,47 @@ Automated API testing framework for the [Trello REST API](https://developer.atla
 ## Project Structure
 
 ```
+.github/
+  workflows/
+    playwright.yml            # GitHub Actions CI/CD pipeline
+.husky/
+  pre-commit                  # Git hook for lint-staged
+  pre-push                    # Git hook for running tests
 data/
-  endpoints.ts        # ENDPOINTS object + HttpMethod enum
-  board.data.ts       # Types and test data for Boards
-  lists.data.ts       # Types and test data for Lists
+  board.data.ts               # Test data and payloads for Boards
+  endpoints.ts                # API endpoints definitions
+  error_messages.ts           # Shared error messages dictionary
+  lists.data.ts               # Test data and payloads for Lists
+fixtures/
+  board-fixtures.ts           # Test fixtures (Dependency Injection, setup & teardown)
 helpers/
-  auth-helpers.ts     # Shared auth params (API key + token)
-  board-helpers.ts    # createBoard / deleteBoard functions
-  lists-helpers.ts    # createList functions
+  api/
+    base-api.ts               # Base API client (auth & request config)
+    board-api.ts              # API wrappers for Board endpoints
+    list-api.ts               # API wrappers for List endpoints
+    member-api.ts             # API wrappers for Member endpoints
+  setup/
+    auth-setup.ts             # Authentication setup logic
+    lists-setup.ts            # Pre-test setup helpers for lists
+  assertions.ts               # Custom assertion functions
 tests/
   boards/
     create-board.spec.ts
+    delete-board.spec.ts
     get-board.spec.ts
     update-board.spec.ts
-    delete-board.spec.ts
   lists/
     create-list.spec.ts
+    list-ordering.spec.ts
   auth.spec.ts
   security-headers.spec.ts
-TEST_PLAN.md
+.env.sample                   # Environment variables template
+eslint.config.mts             # ESLint configuration
+package.json                  # NPM dependencies and scripts
+playwright.config.ts          # Playwright framework configuration
+README.md                     # Project documentation
+TEST-PLAN.md                  # Test plan documentation
+tsconfig.json                 # TypeScript configuration
 ```
 
 ---
@@ -49,7 +71,7 @@ TEST_PLAN.md
 | Resource | Create | Read | Update | Delete |
 |----------|--------|------|--------|--------|
 | Boards | ✅ | ✅ | ✅ | ✅ |
-| Lists | 🔄 | — | — | — |
+| Lists | ✅ | ✅ | 🔄 | — |
 | Cards | — | — | — | — |
 | Labels | — | — | — | — |
 | Checklists | — | — | — | — |
