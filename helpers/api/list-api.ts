@@ -9,8 +9,11 @@ export const createList = (
 export const deleteList = (apiClient: BaseApiClient, listId: string) =>
   apiClient.delete(ENDPOINTS.LIST.BY_ID(listId));
 
-export const getList = (apiClient: BaseApiClient, listId: string) =>
-  apiClient.get(ENDPOINTS.LIST.BY_ID(listId));
+export const getList = (
+  apiClient: BaseApiClient,
+  listId: string,
+  options?: { omitAuth?: boolean },
+) => apiClient.get(ENDPOINTS.LIST.BY_ID(listId), options);
 
 export const updateList = (
   apiClient: BaseApiClient,
