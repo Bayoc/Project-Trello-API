@@ -44,6 +44,34 @@ test.describe("PUT List", () => {
         closed: true,
       });
     });
+
+    test("PUT Update List name on archived (closed) list - name should be updated and return 200", async ({
+      apiClient,
+      listManagement,
+    }) => {
+      const { listId, boardId } = await listManagement.createListWithBoard();
+      const archivedName = buildList().name;
+
+      // First, archive the list
+      await updateList(apiClient, listId, {
+        data: { closed: true },
+      });
+
+      // Then, attempt to update the name of the archived list
+      const response = await updateList(apiClient, listId, {
+        data: { name: archivedName },
+      });
+      assertStatusCode(response, 200);
+
+      const body = await response.json();
+      expect(body).toMatchObject({
+        ...validListSchema,
+        name: archivedName,
+        id: listId,
+        idBoard: boardId,
+        closed: true, // Verify that the list remains archived
+      });
+    });
   });
 
   test.describe("Negative Scenarios", () => {
@@ -62,6 +90,29 @@ test.describe("PUT List", () => {
         apiClient,
         buildList({ name: "invalid-id-format" }).name,
       );
+      assertStatusCode(response, 400);
+    });
+
+    test("PUT Update List with empty name - should return 400 bad request", async ({
+      apiClient,
+      listManagement,
+    }) => {
+      const { listId } = await listManagement.createListWithBoard();
+      const response = await updateList(apiClient, listId, {
+        data: { name: "" },
+      });
+      assertStatusCode(response, 400);
+    });
+
+    test("PUT Update List with excessively long name - should return 400 bad request", async ({
+      apiClient,
+      listManagement,
+    }) => {
+      const { listId } = await listManagement.createListWithBoard();
+      const longName = buildList({ name: "A".repeat(16385) }).name;
+      const response = await updateList(apiClient, listId, {
+        data: { name: longName },
+      });
       assertStatusCode(response, 400);
     });
   });

@@ -1,22 +1,21 @@
-import { defineConfig } from '@playwright/test';
-import dotenv from 'dotenv';
+import { defineConfig } from "@playwright/test";
+import dotenv from "dotenv";
 
 dotenv.config();
 
-
-const requiredEnvVars = ['TRELLO_API_KEY', 'TRELLO_TOKEN'];
+const requiredEnvVars = ["TRELLO_API_KEY", "TRELLO_TOKEN"];
 for (const envVar of requiredEnvVars) {
-  if (!process.env[envVar]) throw new Error(`Missing required environment variable: ${envVar}`);
+  if (!process.env[envVar])
+    throw new Error(`Missing required environment variable: ${envVar}`);
 }
 
 export const ENV = {
   api_key: process.env.TRELLO_API_KEY!,
-  token: process.env.TRELLO_TOKEN!
+  token: process.env.TRELLO_TOKEN!,
 };
 
-
 export default defineConfig({
-  testDir: './tests',
+  testDir: "./tests",
   /* Run tests in files in parallel */
   fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -26,22 +25,22 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    baseURL: 'https://api.trello.com',
+    baseURL: "https://api.trello.com",
     extraHTTPHeaders: {
-      'Accept': 'application/json',
+      Accept: "application/json",
     },
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: "on-first-retry",
   },
   projects: [
     {
-      name: 'api',
+      name: "api",
       use: {},
-    }
+    },
   ],
 });
