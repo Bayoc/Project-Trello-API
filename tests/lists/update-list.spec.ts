@@ -53,9 +53,10 @@ test.describe("PUT List", () => {
       const archivedName = buildList().name;
 
       // First, archive the list
-      await updateList(apiClient, listId, {
+      const archiveResponse = await updateList(apiClient, listId, {
         data: { closed: true },
       });
+      assertStatusCode(archiveResponse, 200);
 
       // Then, attempt to update the name of the archived list
       const response = await updateList(apiClient, listId, {
@@ -70,6 +71,30 @@ test.describe("PUT List", () => {
         id: listId,
         idBoard: boardId,
         closed: true, // Verify that the list remains archived
+      });
+    });
+
+    test("PUT Update List unarchived (closed: false) - list should be unarchived and return 200", async ({
+      apiClient,
+      listManagement,
+    }) => {
+      const { listId } = await listManagement.createListWithBoard();
+
+      const archiveResponse = await updateList(apiClient, listId, {
+        data: { closed: true },
+      });
+      assertStatusCode(archiveResponse, 200);
+
+      const response = await updateList(apiClient, listId, {
+        data: { closed: false },
+      });
+      assertStatusCode(response, 200);
+
+      const body = await response.json();
+      expect(body).toMatchObject({
+        ...validListSchema,
+        id: listId,
+        closed: false,
       });
     });
   });
