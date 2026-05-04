@@ -74,6 +74,25 @@ test.describe("PUT List", () => {
       });
     });
 
+    test("PUT Move List to another Board - list should be moved and return 200", async ({
+      apiClient,
+      listManagement,
+      boardManagement,
+    }) => {
+      const { listId } = await listManagement.createListWithBoard();
+      const newBoardId = await boardManagement.createBoard(buildList().name);
+      const response = await updateList(apiClient, listId, {
+        data: { idBoard: newBoardId },
+      });
+      const body = await response.json();
+      assertStatusCode(response, 200);
+      expect(body).toMatchObject({
+        ...validListSchema,
+        id: listId,
+        idBoard: newBoardId,
+      });
+    });
+
     test("PUT Update List unarchived (closed: false) - list should be unarchived and return 200", async ({
       apiClient,
       listManagement,
