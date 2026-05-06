@@ -2,9 +2,9 @@ import { APIResponse, expect } from "@playwright/test";
 
 export function assertStatusCode(
   response: APIResponse,
-  statusCode: number,
+  expectedStatus: number,
 ): void {
-  expect(response.status()).toBe(statusCode);
+  expect(response.status()).toBe(expectedStatus);
 }
 
 export function assertName(

@@ -173,7 +173,7 @@ test.describe("PUT List", () => {
       assertStatusCode(response, 401);
     });
 
-    test("BOLA: should return 401/403/404 when trying to update a list on a board the user doesn't have access to", async ({
+    test("BOLA: should return 401 when trying to update a list on a board the user doesn't have access to", async ({
       alternativeApiClient,
       listManagement,
     }) => {
@@ -183,7 +183,7 @@ test.describe("PUT List", () => {
         data: { name: buildList().name },
       });
 
-      expect([401, 403, 404]).toContain(attackRespone.status());
+      assertStatusCode(attackRespone, 401);
     });
   });
 });
