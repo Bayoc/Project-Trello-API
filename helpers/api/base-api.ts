@@ -8,17 +8,28 @@ export interface RequestOptions {
   omitAuth?: boolean;
 }
 
+export interface AuthCredentials {
+  key: string;
+  token: string;
+}
+
 export class BaseApiClient {
   private request: APIRequestContext;
+  private customAuth?: AuthCredentials;
 
-  constructor(request: APIRequestContext) {
+  constructor(request: APIRequestContext, customAuth?: AuthCredentials) {
     this.request = request;
+    this.customAuth = customAuth;
+  }
+
+  private getAuthParams() {
+    return this.customAuth ? this.customAuth : authParams;
   }
 
   async get(endpoint: string, options?: RequestOptions) {
     const finalParams = options?.omitAuth
       ? options?.params
-      : { ...authParams, ...options?.params };
+      : { ...this.getAuthParams(), ...options?.params };
 
     return this.request.get(endpoint, {
       ...options,
@@ -29,7 +40,7 @@ export class BaseApiClient {
   async post(endpoint: string, options?: RequestOptions) {
     const finalParams = options?.omitAuth
       ? options?.params
-      : { ...authParams, ...options?.params };
+      : { ...this.getAuthParams(), ...options?.params };
 
     return this.request.post(endpoint, {
       ...options,
@@ -40,7 +51,7 @@ export class BaseApiClient {
   async put(endpoint: string, options?: RequestOptions) {
     const finalParams = options?.omitAuth
       ? options?.params
-      : { ...authParams, ...options?.params };
+      : { ...this.getAuthParams(), ...options?.params };
 
     return this.request.put(endpoint, {
       ...options,
@@ -51,7 +62,7 @@ export class BaseApiClient {
   async delete(endpoint: string, options?: RequestOptions) {
     const finalParams = options?.omitAuth
       ? options?.params
-      : { ...authParams, ...options?.params };
+      : { ...this.getAuthParams(), ...options?.params };
     return this.request.delete(endpoint, {
       ...options,
       params: finalParams,

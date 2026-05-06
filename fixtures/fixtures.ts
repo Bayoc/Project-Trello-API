@@ -4,6 +4,7 @@ import { createList } from "../helpers/api/list-api";
 import { BaseApiClient } from "../helpers/api/base-api";
 import { buildBoard } from "../helpers/factories/board-factory";
 import { buildList } from "../helpers/factories/list-factory";
+import { alternativeAuthParams } from "../helpers/setup/auth-setup";
 
 export type BoardManagement = {
   createBoard: (name?: string) => Promise<string>;
@@ -24,12 +25,18 @@ export type ListManagement = {
 
 export const test = base.extend<{
   apiClient: BaseApiClient;
+  alternativeApiClient: BaseApiClient;
   boardManagement: BoardManagement;
   listManagement: ListManagement;
 }>({
   apiClient: async ({ request }, use) => {
     const client = new BaseApiClient(request);
     await use(client);
+  },
+
+  alternativeApiClient: async ({ request }, use) => {
+    const altClient = new BaseApiClient(request, alternativeAuthParams);
+    await use(altClient);
   },
 
   boardManagement: async ({ apiClient }, use) => {

@@ -12,6 +12,8 @@ for (const envVar of requiredEnvVars) {
 export const ENV = {
   api_key: process.env.TRELLO_API_KEY!,
   token: process.env.TRELLO_TOKEN!,
+  alt_api_key: process.env.TRELLO_ALT_KEY!,
+  alt_token: process.env.TRELLO_ALT_TOKEN!,
 };
 
 export default defineConfig({
