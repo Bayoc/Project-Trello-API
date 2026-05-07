@@ -16,11 +16,16 @@ export type ListManagement = {
   createList: (
     boardId: string,
     name?: string,
-  ) => Promise<{ listId: string; listName: string }>;
+    listPos?: number,
+  ) => Promise<{ listId: string; listName: string; listPos: number }>;
   createListWithBoard: (
     listName?: string,
     boardName?: string,
-  ) => Promise<{ boardId: string; listId: string; listName: string }>;
+  ) => Promise<{
+    boardId: string;
+    listId: string;
+    listName: string;
+  }>;
 };
 
 export const test = base.extend<{
@@ -79,15 +84,19 @@ export const test = base.extend<{
   },
 
   listManagement: async ({ apiClient, boardManagement }, use) => {
-    const createListLogic = async (boardId: string, name?: string) => {
+    const createListLogic = async (
+      boardId: string,
+      name?: string,
+      listPos?: number,
+    ) => {
       const generatedName = name ?? buildList().name;
       const response = await createList(apiClient, {
-        data: { name: generatedName, idBoard: boardId },
+        data: { name: generatedName, idBoard: boardId, pos: listPos },
       });
 
       const body = await response.json();
 
-      return { listId: body.id, listName: generatedName };
+      return { listId: body.id, listName: generatedName, listPos: body.pos };
     };
 
     await use({

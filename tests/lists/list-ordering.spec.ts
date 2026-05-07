@@ -5,7 +5,7 @@ import {
   assertStatusCode,
 } from "../../helpers/assertions";
 import { test } from "../../fixtures/fixtures";
-import { createList } from "../../helpers/api/list-api";
+import { createList, updateList } from "../../helpers/api/list-api";
 import { buildBoard } from "../../helpers/factories/board-factory";
 import { buildList } from "../../helpers/factories/list-factory";
 
@@ -60,35 +60,43 @@ test.describe("POST - List Ordering", () => {
       assertPositionIsGreaterThan(body3, pos1);
       assertPositionIsLessThan(body3, pos2);
     });
-  });
 
-  test.describe("Negative Scenarios", () => {
-    test('POST Create List - invalid enum string ("middle") should return 400', async ({
+    test("PUT Update List Position - should update list position using 'top' and maintain correct ordering", async ({
       apiClient,
       boardManagement,
+      listManagement,
     }) => {
-      const boardId = await boardManagement.createBoard("List Ordering Board");
-      const response = await createList(apiClient, {
-        data: {
-          name: buildList().name,
-          idBoard: boardId,
-          pos: "middle", // Invalid enum value
-        },
+      const boardId = await boardManagement.createBoard(buildBoard().name);
+
+      const list1 = await listManagement.createList(boardId);
+      const list2 = await listManagement.createList(boardId);
+
+      const positionResponse = await updateList(apiClient, list2.listId, {
+        data: { pos: "top" },
       });
-      assertStatusCode(response, 400);
+
+      assertStatusCode(positionResponse, 200);
+      const changedPositionBody = await positionResponse.json();
+      assertPositionIsLessThan(changedPositionBody, list1.listPos);
     });
 
-    test("POST Create List - missing parent idBoard should return 400", async ({
+    test("PUT Update List Position to 'bottom' - should update list position to the end of the list and return 200", async ({
       apiClient,
+      boardManagement,
+      listManagement,
     }) => {
-      const response = await createList(apiClient, {
-        data: {
-          name: buildList().name,
-          // idBoard is intentionally missing
-          pos: "top",
-        },
+      const boardId = await boardManagement.createBoard(buildBoard().name);
+
+      const list1 = await listManagement.createList(boardId);
+      const list2 = await listManagement.createList(boardId);
+
+      const positionResponse = await updateList(apiClient, list1.listId, {
+        data: { pos: "bottom" },
       });
-      assertStatusCode(response, 400);
+
+      assertStatusCode(positionResponse, 200);
+      const updatedPositionBody = await positionResponse.json();
+      assertPositionIsGreaterThan(updatedPositionBody, list2.listPos);
     });
   });
 });

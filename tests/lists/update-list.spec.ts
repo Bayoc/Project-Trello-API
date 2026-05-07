@@ -179,11 +179,11 @@ test.describe("PUT List", () => {
     }) => {
       const { listId } = await listManagement.createListWithBoard();
 
-      const attackRespone = await updateList(alternativeApiClient, listId, {
+      const attackResponse = await updateList(alternativeApiClient, listId, {
         data: { name: buildList().name },
       });
 
-      assertStatusCode(attackRespone, 401);
+      assertStatusCode(attackResponse, 401);
     });
   });
 });

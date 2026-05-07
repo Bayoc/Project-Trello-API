@@ -55,5 +55,32 @@ test.describe("POST - Create List", () => {
       });
       assertStatusCode(response, 400);
     });
+
+    test('POST Create List - invalid enum string ("middle") should return 400', async ({
+      apiClient,
+      boardManagement,
+    }) => {
+      const boardId = await boardManagement.createBoard("List Ordering Board");
+      const response = await createList(apiClient, {
+        data: {
+          name: buildList().name,
+          idBoard: boardId,
+          pos: "middle", // Invalid enum value
+        },
+      });
+      assertStatusCode(response, 400);
+    });
+
+    test("POST Create List - missing parent idBoard should return 400", async ({
+      apiClient,
+    }) => {
+      const response = await createList(apiClient, {
+        data: {
+          name: buildList().name,
+          // idBoard is intentionally missing
+        },
+      });
+      assertStatusCode(response, 400);
+    });
   });
 });
