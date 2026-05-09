@@ -37,16 +37,29 @@ export function assertHasProperty(
   expect(body).toHaveProperty(property);
 }
 
-export function assertPositionIsGreaterThan(
+/* export function assertPositionIsGreaterThan(
   body: Record<string, unknown>,
   position: number,
 ): void {
   expect(body["pos"]).toBeGreaterThan(position);
+} */
+
+export function assertPositionIsGreaterThan(
+  actualPos: number,
+  basePos: number,
+): void {
+  expect(actualPos).toBeGreaterThan(basePos);
 }
 
-export function assertPositionIsLessThan(
+/* export function assertPositionIsLessThan(
   body: Record<string, unknown>,
   position: number,
 ): void {
   expect(body["pos"]).toBeLessThan(position);
+} */
+export function assertPositionIsLessThan(
+  actualPos: number,
+  basePos: number,
+): void {
+  expect(actualPos).toBeLessThan(basePos);
 }

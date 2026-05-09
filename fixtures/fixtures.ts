@@ -1,4 +1,4 @@
-import { test as base } from "@playwright/test";
+import { test as base, expect } from "@playwright/test";
 import { createBoard, deleteBoard } from "../helpers/api/board-api";
 import { createList } from "../helpers/api/list-api";
 import { BaseApiClient } from "../helpers/api/base-api";
@@ -12,19 +12,32 @@ export type BoardManagement = {
   addBoardForCleanup: (boardId: string) => void;
 };
 
+type ListOverrides = {
+  id?: string;
+  name?: string;
+  pos?: number | string;
+  closed?: boolean;
+};
+
 export type ListManagement = {
   createList: (
     boardId: string,
-    name?: string,
-    listPos?: number,
-  ) => Promise<{ listId: string; listName: string; listPos: number }>;
+    listOverrides?: ListOverrides,
+  ) => Promise<{
+    listId: string;
+    listName: string;
+    listPos: number;
+    listClosed?: boolean;
+  }>;
   createListWithBoard: (
-    listName?: string,
+    listOverrides?: ListOverrides,
     boardName?: string,
   ) => Promise<{
     boardId: string;
     listId: string;
     listName: string;
+    listPos: number;
+    listClosed?: boolean;
   }>;
 };
 
@@ -86,13 +99,20 @@ export const test = base.extend<{
   listManagement: async ({ apiClient, boardManagement }, use) => {
     const createListLogic = async (
       boardId: string,
-      name?: string,
-      listPos?: number,
+      overrides?: ListOverrides,
     ) => {
-      const generatedName = name ?? buildList().name;
+      const generatedName = overrides?.name ?? buildList().name;
+
+      const requestData = {
+        idBoard: boardId,
+        name: generatedName,
+        ...overrides,
+      };
+
       const response = await createList(apiClient, {
-        data: { name: generatedName, idBoard: boardId, pos: listPos },
+        data: requestData,
       });
+      expect(response.status()).toBe(200);
 
       const body = await response.json();
 
@@ -102,15 +122,19 @@ export const test = base.extend<{
     await use({
       createList: createListLogic,
 
-      createListWithBoard: async (listName?: string, boardName?: string) => {
+      createListWithBoard: async (
+        listOverrides?: ListOverrides,
+        boardName?: string,
+      ) => {
         const boardId = await boardManagement.createBoard(boardName);
 
-        const listData = await createListLogic(boardId, listName);
+        const listData = await createListLogic(boardId, listOverrides);
 
         return {
           boardId,
           listId: listData.listId,
           listName: listData.listName,
+          listPos: listData.listPos,
         };
       },
     });
