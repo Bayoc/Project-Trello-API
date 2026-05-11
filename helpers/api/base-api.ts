@@ -27,44 +27,52 @@ export class BaseApiClient {
   }
 
   async get(endpoint: string, options?: RequestOptions) {
-    const finalParams = options?.omitAuth
-      ? options?.params
-      : { ...this.getAuthParams(), ...options?.params };
+    const { omitAuth, params, ...playwrightOptions } = options || {};
+
+    const finalParams = omitAuth
+      ? params
+      : { ...this.getAuthParams(), ...params };
 
     return this.request.get(endpoint, {
-      ...options,
+      ...playwrightOptions,
       params: finalParams,
     });
   }
 
   async post(endpoint: string, options?: RequestOptions) {
-    const finalParams = options?.omitAuth
-      ? options?.params
-      : { ...this.getAuthParams(), ...options?.params };
+    const { omitAuth, params, ...playwrightOptions } = options || {};
+
+    const finalParams = omitAuth
+      ? params
+      : { ...this.getAuthParams(), ...params };
 
     return this.request.post(endpoint, {
-      ...options,
+      ...playwrightOptions,
       params: finalParams,
     });
   }
 
   async put(endpoint: string, options?: RequestOptions) {
-    const finalParams = options?.omitAuth
-      ? options?.params
-      : { ...this.getAuthParams(), ...options?.params };
+    const { omitAuth, params, ...playwrightOptions } = options || {};
+
+    const finalParams = omitAuth
+      ? params
+      : { ...this.getAuthParams(), ...params };
 
     return this.request.put(endpoint, {
-      ...options,
+      ...playwrightOptions,
       params: finalParams,
     });
   }
 
   async delete(endpoint: string, options?: RequestOptions) {
-    const finalParams = options?.omitAuth
-      ? options?.params
-      : { ...this.getAuthParams(), ...options?.params };
+    const { omitAuth, params, ...playwrightOptions } = options || {};
+
+    const finalParams = omitAuth
+      ? params
+      : { ...this.getAuthParams(), ...params };
     return this.request.delete(endpoint, {
-      ...options,
+      ...playwrightOptions,
       params: finalParams,
     });
   }
