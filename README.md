@@ -71,8 +71,8 @@ tsconfig.json                 # TypeScript configuration
 | Resource | Create | Read | Update | Delete |
 |----------|--------|------|--------|--------|
 | Boards | ✅ | ✅ | ✅ | ✅ |
-| Lists | ✅ | ✅ | 🔄 | — |
-| Cards | — | — | — | — |
+| Lists | ✅ | ✅ | ✅ | ✅ |
+| Cards | 🔄 | 🔄 | 🔄 | 🔄 |
 | Labels | — | — | — | — |
 | Checklists | — | — | — | — |
 | Members | — | — | — | — |
