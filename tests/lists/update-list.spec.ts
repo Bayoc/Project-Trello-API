@@ -161,7 +161,7 @@ test.describe("PUT List", () => {
     });
   });
 
-  test.describe("Security Checks", () => {
+  test.describe("Security Scenarios", () => {
     test("PUT Update List without authentication - should return 401 unauthorized", async ({
       apiClient,
       listManagement,
