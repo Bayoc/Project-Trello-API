@@ -2,6 +2,8 @@ import { faker } from "@faker-js/faker";
 
 export interface CardPayload {
   name: string;
+  desc?: string;
+  pos?: "top" | "botoom" | string;
 }
 
 export function buildCard(overrides?: Partial<CardPayload>): CardPayload {

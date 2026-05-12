@@ -5,6 +5,8 @@ import { BaseApiClient } from "../helpers/api/base-api";
 import { buildBoard } from "../helpers/factories/board-factory";
 import { buildList } from "../helpers/factories/list-factory";
 import { alternativeAuthParams } from "../helpers/setup/auth-setup";
+import { createCard } from "../helpers/api/card-api";
+import { buildCard } from "../helpers/factories/card-factory";
 
 export type BoardManagement = {
   createBoard: (name?: string) => Promise<string>;
@@ -17,6 +19,12 @@ type ListOverrides = {
   name?: string;
   pos?: number | string;
   closed?: boolean;
+};
+
+export type CardOverrides = {
+  name?: string;
+  pos?: number | string;
+  desc?: string;
 };
 
 export type ListManagement = {
@@ -41,11 +49,32 @@ export type ListManagement = {
   }>;
 };
 
+export type CardManagement = {
+  createCard: (
+    listId: string,
+    cardOverrides?: CardOverrides,
+  ) => Promise<{
+    cardId: string;
+    cardName: string;
+  }>;
+  createCardWithListAndBoard: (
+    cardOverrides?: CardOverrides,
+    listOverrides?: ListOverrides,
+    boardName?: string,
+  ) => Promise<{
+    boardId: string;
+    listId: string;
+    cardId: string;
+    cardName: string;
+  }>;
+};
+
 export const test = base.extend<{
   apiClient: BaseApiClient;
   alternativeApiClient: BaseApiClient;
   boardManagement: BoardManagement;
   listManagement: ListManagement;
+  cardManagement: CardManagement;
 }>({
   apiClient: async ({ request }, use) => {
     const client = new BaseApiClient(request);
@@ -135,6 +164,54 @@ export const test = base.extend<{
           listId: listData.listId,
           listName: listData.listName,
           listPos: listData.listPos,
+        };
+      },
+    });
+  },
+
+  cardManagement: async ({ apiClient, listManagement }, use) => {
+    const createCardLogic = async (
+      listId: string,
+      overrides?: CardOverrides,
+    ) => {
+      const generatedName = overrides?.name ?? buildCard().name;
+
+      const requestData = {
+        idList: listId,
+        name: generatedName,
+        ...overrides,
+      };
+
+      const response = await createCard(apiClient, {
+        data: requestData,
+      });
+      expect(response.status()).toBe(200);
+
+      const body = await response.json();
+
+      return { cardId: body.id, cardName: generatedName };
+    };
+
+    await use({
+      createCard: createCardLogic,
+
+      createCardWithListAndBoard: async (
+        cardOverrides?: CardOverrides,
+        listOverrides?: ListOverrides,
+        boardName?: string,
+      ) => {
+        const { boardId, listId } = await listManagement.createListWithBoard(
+          listOverrides,
+          boardName,
+        );
+
+        const cardData = await createCardLogic(listId, cardOverrides);
+
+        return {
+          boardId,
+          listId,
+          cardId: cardData.cardId,
+          cardName: cardData.cardName,
         };
       },
     });
