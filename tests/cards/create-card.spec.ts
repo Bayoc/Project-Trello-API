@@ -224,4 +224,20 @@ test.describe("POST - Create Card", () => {
       expect(body.id).not.toBe(sourceCardId); // Ensure a new card is created, not just a reference to the existing card
     });
   });
+
+  test.describe("Type Juggling Scenarios", () => {
+    test("POST Create Card with array in name field - should return error 400 Bad Request", async ({
+      apiClient,
+      listManagement,
+    }) => {
+      const { listId } = await listManagement.createListWithBoard();
+      const response = await createCard(apiClient, {
+        data: {
+          idList: listId,
+          name: ["Invalid", "Name", "Array"], // Invalid array instead of string
+        },
+      });
+      assertStatusCode(response, 400);
+    });
+  });
 });
