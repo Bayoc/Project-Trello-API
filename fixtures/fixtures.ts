@@ -86,13 +86,21 @@ export const test = base.extend<{
     await use(altClient);
   },
 
-  boardManagement: async ({ apiClient }, use) => {
+  boardManagement: async ({ apiClient }, use, testInfo) => {
     const boardsToCleanup: string[] = [];
 
     await use({
       createBoard: async (name?: string) => {
+        let finalBoardName = name;
+        if (!finalBoardName) {
+          // generate a unique board name based on the test title to avoid collisions and improve traceability
+          const testName = testInfo.title.substring(0, 25);
+          const safeTestName = testName.replace(/[^a-zA-Z0-9 ]/g, "");
+          finalBoardName = `[${safeTestName}] Board_${buildBoard().name.substring(0, 5)}`;
+        }
+
         const response = await createBoard(apiClient, {
-          data: { name: name ?? buildBoard().name },
+          data: { name: finalBoardName },
         });
         const body = await response.json();
         const boardId = body.id;
