@@ -174,5 +174,54 @@ test.describe("POST - Create Card", () => {
       });
       assertStatusCode(response, 401);
     });
+
+    test("POST/BOLA Create Card - should reaturn 401 Unauthorized when trying to create card in a private board without access", async ({
+      alternativeApiClient,
+      listManagement,
+    }) => {
+      // Create a private board with list using the main API Client
+      const { listId } = await listManagement.createListWithBoard();
+
+      const attackResponse = await createCard(alternativeApiClient, {
+        data: {
+          idList: listId,
+          name: buildCard().name,
+        },
+      });
+      assertStatusCode(attackResponse, 401);
+    });
+  });
+
+  test.describe("Buisness Logic Scenarios", () => {
+    test("POST Create Card by copyin an existing card - should create a new card with same details and return 200", async ({
+      apiClient,
+      cardManagement,
+    }) => {
+      const uniqueDescription = faker.lorem.sentence();
+
+      const { listId, cardId: sourceCardId } =
+        await cardManagement.createCardWithListAndBoard({
+          desc: uniqueDescription,
+        });
+
+      const nameOfNewCard = `Copy of ${sourceCardId}`;
+      const response = await createCard(apiClient, {
+        data: {
+          idList: listId,
+          name: nameOfNewCard,
+          idCardSource: sourceCardId, // Use the id of the existing card to create a copy
+        },
+      });
+      assertStatusCode(response, 200);
+
+      const body = await response.json();
+      expect(body).toMatchObject({
+        ...validCardSchema,
+        idList: listId,
+        name: nameOfNewCard,
+        desc: uniqueDescription, // Ensure the description is copied from the source card
+      });
+      expect(body.id).not.toBe(sourceCardId); // Ensure a new card is created, not just a reference to the existing card
+    });
   });
 });
